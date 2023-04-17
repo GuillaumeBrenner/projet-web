@@ -209,7 +209,7 @@ require_once "../../config.php";
 
                   console.log(data);
 
-                  $('#id_offre').val(data[0]);
+                  $('#id_o').val(data[0]);
 
             });
       });
@@ -228,7 +228,7 @@ require_once "../../config.php";
                         </div>
                         <form action="deleteOffre.php" method="post">
                               <div class="modal-body">
-                                    <input type="hidden" name="id_offre" id="id_offre">
+                                    <input type="hidden" name="id_o" id="id_o">
                                     <h4>Voulez-vous vraiment supprimer cet offre?</h4>
                               </div>
                               <div class="modal-footer">

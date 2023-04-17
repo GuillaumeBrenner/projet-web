@@ -10,14 +10,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 require_once "../../config.php";
 
-$id_o = $_POST['id_offre'];
+$id_o = $_POST['id_o'];
 
-$sql = "UPDATE `offre` SET `valide`= 0 WHERE `id_offre` = '$id_o' ";
+$sql = "UPDATE offre SET valide = 0 WHERE id_offre = '$id_o' ";
 
 $stmt = $pdo->exec($sql);
 
 if ($stmt) {
-    $_SESSION['supp'] = "Donnée supprimée";
+    $_SESSION['status'] = "Donnée supprimée";
       header("Location: listOffre.php");
 } else {
     $_SESSION['supp'] = "Erreur de suppression";
