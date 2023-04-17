@@ -15,7 +15,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
-      <title>Welcome</title>
+      <title>Acceuil</title>
       <link rel="stylesheet" href="../assets/vendors/bootstrap/css/bootstrap.min.css" />
       <link rel="stylesheet" href="../assets/vendors/fontawesome/css/all.min.css" />
       <link rel="stylesheet" href="../style.css" type="text/css" />
@@ -71,7 +71,66 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                   </div>
             </nav>
       </div>
-      <div class="search-form">
+      <?php
+
+if (($_SESSION["id"]) === 1 || $_SESSION["id"] === 4) {
+
+?>
+      <div class="container mt-5 mb-3">
+            <div class="row">
+                  <div class="col-md-4">
+                        <div class="card p-3 mb-2">
+                              <div class="mt-5">
+                                    <h3 class="heading">1<br>CREER LES ENTREPRISES</h3>
+                                    <div class="mt-5">
+                                          <div class="progress" role="progressbar" aria-label="Example 1px high"
+                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                                                style="height: 1px">
+                                                <div class="progress-bar" style="width: 40%"></div>
+                                          </div>
+                                          <div class="mt-3"> <span class="text1"></span>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+                  <div class="col-md-4">
+                        <div class="card p-3 mb-2">
+                              <div class="mt-5">
+                                    <h3 class="heading">2<br>CREER LES OFFRES</h3>
+                                    <div class="mt-5">
+                                          <div class="progress" role="progressbar" aria-label="Example 1px high"
+                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                                                style="height: 1px">
+                                                <div class="progress-bar" style="width: 50%"></div>
+                                          </div>
+                                          <div class="mt-3"> <span class="text1"></span>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+                  <div class="col-md-4">
+                        <div class="card p-3 mb-2">
+                              <div class="mt-5">
+                                    <h3 class="heading">3<br>CREER LES COMPTES</h3>
+                                    <div class="mt-5">
+                                          <div class="progress" role="progressbar" aria-label="Example 1px high"
+                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                                                style="height: 1px">
+                                                <div class="progress-bar" style="width: 100%"></div>
+                                          </div>
+                                          <div class="mt-3"> <span class="text1"></span>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+      <?php }
+      ?>
+      <!-- <div class="search-form">
             <form class="row g-3">
                   <div class="col-md-10">
                         <input type="text" class="form-control" id="" placeholder="Mots clés">
@@ -101,7 +160,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         </select>
                   </div>
             </form>
-      </div>
+            </div> -->
 
       <?php
       include 'home.php';

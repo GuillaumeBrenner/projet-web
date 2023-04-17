@@ -77,7 +77,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                   <?php
                   require_once "../../config.php";
                   if (isset($_GET['id'])) {
-                        $sql = "SELECT o.Titre, o.Durée, o.Durée, o.nombre_places,o.Remuneration,o.Date_post,o.Description, v.ville
+                        $sql = "SELECT o.Titre, o.Durée, o.Durée, o.nombre_places,o.Remuneration,o.Date_post,o.descrip, v.ville
                               FROM offre o
                               INNER JOIN site s ON s.id_site = o.id_site 
                               INNER JOIN ville v ON v.id_ville = s.id_ville WHERE o.id_offre= " . $_GET['id'];
@@ -137,7 +137,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                                     <label class="col-sm-2 col-form-label">Description
                                     </label>
                                     <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['Description'] ?>"
+                                          <input class="form-control" type="text" value="<?= $row['descrip'] ?>"
                                                 disabled>
                                     </div>
                               </div>

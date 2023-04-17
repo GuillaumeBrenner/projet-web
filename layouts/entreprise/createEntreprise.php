@@ -24,10 +24,27 @@ require_once "../../config.php";
             crossorigin="anonymous" referrerpolicy="no-referrer" />
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-      <link rel="stylesheet" href="FormsCSS.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous"
+  referrerpolicy="no-referrer" />
+            <link rel="stylesheet" href="FormsCSS.css">
+      
 </head>
 
 <body>
+<style>
+            .profile_img{
+    margin-left: 35%;
+    width: 40%;
+}
+      </style>
+      <?php
+            $req = "SELECT * from secteur_activité";
+            $sectSel = $pdo->query($req);
+
+            $req = "SELECT * from ville";
+            $villeSel = $pdo->query($req);
+
+      ?>
       <div class="container">
             <div class="container mt-5">
                   <div class="card">
@@ -43,32 +60,26 @@ require_once "../../config.php";
 
 
                                     <div class="mb-3 Ent">
-                                          <img src="logo.png" class="profile_img" id="profile_img"
-                                                alt="Responsive image" id>
-                                          </img>
-                                          <input class="form-control form-control-sm inpt" id="image_file" type="file"
-                                                accept="image/*" />
+                                    <img src="\upload\profile_pics\default.png" class="profile_img" id="profile_img" alt="Responsive image" > </img>
+                                          <input class="form-control form-control-sm inpt" id="image_file" type="file" accept="image/*" name="profile_img"/> 
                                     </div>
 
 
                                     <div class="mb-3">
                                           <label for="FormInput" class="form-label">Localité</label>
                                           <div class="row">
-                                                <div class="col loc ">
-                                                      <input type="text" class="form-control mr-1 w-60 "
-                                                            id="exampleFormControlInput2" name="CodePostal"
-                                                            placeholder="CodePostal">
-                                                </div>
-                                                <div class="col loc">
-                                                      <input type="text" class="form-control mr-1 w-60"
-                                                            id="exampleFormControlInput2" name="Ville"
-                                                            placeholder="Ville">
-                                                </div>
-                                                <div class="col loc">
-                                                      <input type="text" class="form-control mr- w-60"
-                                                            id="exampleFormControlInput2" name="Region"
-                                                            placeholder="Region">
-                                                </div>
+                                          <select name="ville[]" class="selectpicker" multiple aria-label="Default select example" data-live-search="true">
+                                          <?php
+                                                while ($tab = $villeSel->fetch()) {
+                                                      $code_postal = $tab[2];
+                                                      /* rajoute un zero devant si le code postal est a 4 chiffres */
+                                                      if (strlen($code_postal) == 4) {
+                                                            $code_postal = '0' . $code_postal;
+                                                      }
+                                                      echo '<option value="' . $tab[1] . '(' . $code_postal. ')' . '">'  . $tab[1] . '(' . $code_postal. ')' .  '</option>';
+                                                }
+                                          ?>
+                                          </select>
                                           </div>
                                     </div>
 
@@ -77,8 +88,13 @@ require_once "../../config.php";
                                     <div class="mb-3">
                                           <label for="FormInput" class="form-label" id="secAc">Secteur
                                                 d'activité</label>
-                                          <input type="text" class="form-control" id="exampleFormControlInput1"
-                                                placeholder="" name="Secteur_dactivité">
+                                          <select name="secteur[]" class="selectpicker" multiple aria-label="Default select example" data-live-search="true">
+                                          <?php
+                                                while ($tab = $sectSel->fetch()) {
+                                                      echo '<option value="' . $tab[1] .'">'  . $tab[1] .  '</option>';
+                                                }
+                                          ?>
+                                          </select>
                                     </div>
 
 
@@ -103,6 +119,7 @@ require_once "../../config.php";
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
       </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 <script>

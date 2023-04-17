@@ -28,25 +28,15 @@ $first_Name = $_POST["nom"];
 $last_Name = $_POST["prenom"];
 $Sexe = $_POST["sexe"];
 
-//set the variable for the ville of the person
-$Ville = substr($_POST["ville"] , 0 , -7);
-
-
 
 //set the variable for the compte we want to create
 $motdepasse = $_POST["mdp"];
 $login = $_POST["login"];
-$id_entreprise="";
+$id_entreprise= $_POST["entreprise"];
 
 
 //set the variable for the type we want to create
-$idtype= 3;
-
-
-//the photo of profil part of the projet
-
-
-
+$idtype= 2;
 
 
 
@@ -65,37 +55,26 @@ $person_creation->bindParam(":sexe", $Sexe);
 if($person_creation->execute()){
     $idpersonne_created=$pdo->lastInsertId();
 }
-
-$villeid = $pdo->prepare("SELECT id_ville FROM ville WHERE ville = :ville");
-$villeid->bindParam(":ville", $Ville);
-$villeid->execute();
-$idville_seleced = $villeid->fetch(PDO::FETCH_ASSOC)['id_ville'];
-
 $validite = 1;
 
+
+$id_ent = $pdo->prepare("SELECT id_entreprise FROM entreprise WHERE nom = :nom");
+$id_ent->bindParam(":nom", $id_entreprise);
+$id_ent->execute();
+$id_entreprise = $id_ent->fetch()['id_entreprise'];
+
 //creation compte etudiant
+echo 'zjdfgb';
+echo $id_entreprise;
 
-$compte_etudiant_creation=$pdo->prepare("INSERT INTO compte (login, photo_profil, mdp, validite, id_personne, id_type) VALUES (:login, :photo_profil, :mdp, :validite, :id_personne, :id_type )");
-$compte_etudiant_creation->bindParam(":login", $login);
-$compte_etudiant_creation->bindParam(":photo_profil", $photo_profil);
-$compte_etudiant_creation->bindParam(":mdp", $motdepasse);
-$compte_etudiant_creation->bindParam(":validite", $validite);
-$compte_etudiant_creation->bindParam(":id_personne", $idpersonne_created);
-$compte_etudiant_creation->bindParam(":id_type", $idtype);
-
-if($compte_etudiant_creation->execute()){
-  $id_etudiant_created=$pdo->lastInsertId();}
-
-
-
-//relying compte w his locality whit the table "centre"
-$compte_centre_creation=$pdo->prepare("INSERT INTO centre (id_c, id_ville ) VALUES ( :id_c, :id_ville )");
-$compte_centre_creation->bindParam(":id_c", $id_etudiant_created);
-$compte_centre_creation->bindParam(":id_ville", $idville_seleced);
-$compte_centre_creation->execute();
-
-
-
-header("Location : listComptes.php")
+$compte_pilote_creation=$pdo->prepare("INSERT INTO compte (login, photo_profil, mdp, validite, id_personne, id_type , id_entreprise) VALUES (:login, :photo_profil, :mdp, :validite, :id_personne, :id_type , :id_entreprise )");
+$compte_pilote_creation->bindParam(":login", $login);
+$compte_pilote_creation->bindParam(":photo_profil", $photo_profil);
+$compte_pilote_creation->bindParam(":mdp", $motdepasse);
+$compte_pilote_creation->bindParam(":validite", $validite);
+$compte_pilote_creation->bindParam(":id_personne", $idpersonne_created);
+$compte_pilote_creation->bindParam(":id_type", $idtype);
+$compte_pilote_creation->bindParam(":id_entreprise", $id_entreprise);
+$compte_pilote_creation->execute()
 
 ?>

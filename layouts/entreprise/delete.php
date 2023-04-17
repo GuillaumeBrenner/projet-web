@@ -10,22 +10,16 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 require_once "../../config.php";
 
-if(isset($_POST['deletedata']))
-{
-    $id = $_POST['delete_id'];
+var_dump($_POST);
 
-    $sql = "DELETE FROM entreprise WHERE id_entreprise = '$id'";
-    $pdo->query($sql);
+$id = $_POST['id_entreprise'];
 
-    if($pdo->query($sql))
-    {
-        $_SESSION['supp'] = "Donnée supprimée";
-          header("Location: listEntreprise.php");
-    }
-    else
-    {
-        echo '<script> alert("Erreur, Veuillez réessayer"); </script>';
-    }
-}
+$del_c = $pdo->prepare("UPDATE entreprise SET validite = 0 WHERE id_entreprise = :id");
+$del_c->bindParam(":id", $id);
+$del_c->execute();
+
+$newURL = "listEntreprise.php";
+
+header('Location: '.$newURL);
 
 ?>

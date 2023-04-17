@@ -20,6 +20,10 @@ require_once "../../config.php";
       <title>Création Offre</title>
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css">
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css">
+      <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
+            integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -32,22 +36,16 @@ require_once "../../config.php";
       </style>
       <div class="container mt-5">
             <div class="card">
-                  <h1 class="Offre card-header"> Créer un étudiant</h1>
+                  <h1 class="Offre card-header"> Créer un pro</h1>
                   <?php
                   $req = "SELECT * from entreprise";
                   $entSel = $pdo->query($req);
 
-                  $req = "SELECT * from ville";
-                  $villeSel = $pdo->query($req);
-
-                  $req = "SELECT * from promotion";
-                  $promoSel = $pdo->query($req);
-
-                  if ($entSel && $villeSel && $promoSel) {
+                  if ($entSel) {
 
                   ?>
                   <div class="card-body">
-                        <form action="insertEtudiant.php" method="post" enctype="multipart/form-data">
+                        <form action="insertPro.php" method="post" enctype="multipart/form-data">
                               <div class="row">
                                     <input type="hidden" name="id_type" id="id_type">
                                     <div class="col-md-6">
@@ -114,43 +112,25 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput Description" class="form-label Offre">Mot de
                                                             passe</label>
-                                                      <input type="Text" class="form-control Description" id="mdp"
-                                                            name="mdp" placeholder="">
+                                                      <input type="Text" class="form-control Description"
+                                                            id="mdp multiple-select-field" name="mdp" placeholder="">
                                                 </div>
                                           </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
-                                          <div class="form-group">
-                                                <label class="form-label" id="promo">Promotion</label>
-                                                <select name="promo" id="SelectPromo" class="form-select"
-                                                      aria-label="Default select example">
-                                                      <?php
-                                                                  while ($tab = $promoSel->fetch()) {
-                                                                        echo '<option selected>Promotion</option>';
-                                                                        echo '<option value="' . $tab[0] . '">' . $tab[1] . ' ' . $tab[2] . '</option>';
-                                                                  }
-                                                                  ?>
-                                                </select>
-                                          </div>
-                                    </div>
+
 
                                     <div class="col-md-6 mb-3">
-                                          <label class="form-label">Site</label>
+                                          <label class="form-label">Entreprise</label>
                                           <div class="row">
                                                 <div class="mb-3">
                                                       <input class="form-control" list="datalistOptions"
-                                                            id="exampleDataList" name="ville"
+                                                            id="exampleDataList" name="entreprise"
                                                             placeholder="Commencez à ecrire...">
                                                       <datalist id="datalistOptions">
                                                             <?php
-                                                                  while ($tab = $villeSel->fetch()) {
-                                                                        $code_postal = $tab[2];
-                                                                        /* rajoute un zero devant si le code postal est a 4 chiffres */
-                                                                        if (strlen($code_postal) == 4) {
-                                                                              $code_postal = '0' . $code_postal;
-                                                                        }
-                                                                        echo '<option value="' . $tab[1] . '(' . $code_postal. ')' . '">'  . '</option>';
+                                                                  while ($tab = $entSel->fetch()) {
+                                                                        echo '<option value="' . $tab[1]. '">'  . '</option>';
                                                                   }
                                                             ?>
                                                       </datalist>
@@ -173,6 +153,9 @@ require_once "../../config.php";
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
       </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
+            integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
       <script>
       img_file = document.getElementById("image_file");
       profile_img = document.getElementById("profile_img");

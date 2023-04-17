@@ -1,4 +1,5 @@
 <?php
+// Initialize the session
 session_start();
 
 // Check if the user is logged in, if not then redirect him to login page
@@ -7,23 +8,18 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       exit;
 }
 
+require_once "../../config.php";
 
-$servername = "localhost";
-$username = "root";
-$password = "";
+var_dump($_POST);
 
-try {
-      $pdo = new PDO("mysql:host=$servername;dbname=projetWeb", $username, $password);
-      // set the PDO error mode to exception
-      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$id = $_POST['id_compte'];
 
-      $sql = "UPDATE `compte` SET  `validite`= 0 WHERE `id_c` = '" . $_GET["id_c"] . "'";
-     
-      if( $pdo->exec($sql)) {
-            $_SESSION['supp'] = "Suppression réussie";
-            header("Location: listComptes.php");
-      }
+$del_c = $pdo->prepare("UPDATE `compte` SET `validite`= 0 WHERE `id_c` = :id");
+$del_c->bindParam(":id", $id);
+$del_c->execute();
 
-} catch (PDOException $e) {
-      echo "Pas de connexion à la base de donnée: " . $e->getMessage();
-}
+$newURL = "listComptes.php";
+
+header('Location: '.$newURL);
+
+?>

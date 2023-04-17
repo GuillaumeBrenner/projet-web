@@ -14,12 +14,12 @@ $tabExtension = explode('.', $name);
 $extension = strtolower(end($tabExtension));
 $uniqueName = uniqid('', true);
 $file = $uniqueName.".".$extension;
-move_uploaded_file($tmpName, './upload/profile_pics/'.$file);
+move_uploaded_file($tmpName, '../../upload/profile_pics/'.$file);
 
-$photo_profil = './upload/profile_pics/'.$file;
+$photo_profil = '../../upload/profile_pics/'.$file;
 
 if ($size == 0) {
-    $photo_profil = './upload/profile_pics/default.png';
+    $photo_profil = '../../upload/profile_pics/default.png';
 }
 
 
@@ -100,5 +100,7 @@ for ($i=0; $i < count($promo); $i++) {
     $promo_creation->bindParam(":id_promo", $promo[$i]);
     $promo_creation->execute();
 }
+
+header("Location: listComptes.php")
 
 ?>

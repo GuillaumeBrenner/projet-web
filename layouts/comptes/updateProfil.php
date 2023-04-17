@@ -9,10 +9,10 @@ if (isset($_POST['updateOffre'])) {
       $id_offre = $_POST['id_offre'];
       
       $titre = $_POST["Titre"];
-      $description = $_POST["descrip"];
-      $duree = $_POST["Durée"];
-      $date_post = $_POST["Date_post"];
-      $nombre_places = $_POST["nombre_places"];
+      $description = $_POST["description"];
+      $duree = $_POST["Durée_de_Stage"];
+      $date_offre = $_POST["Date_offre"];
+      $nombre_de_places = $_POST["Nombre_de_places"];
       $remuneration = $_POST["Rémunération"];
       $idVille = $_POST["ville"];
       $idEntreprise = $_POST["entreprise"];
@@ -30,7 +30,7 @@ if (isset($_POST['updateOffre'])) {
             $site = $pdo->query($Sitereq)->fetch()['id_site'];
       };
 
-      $sql = "UPDATE offre SET Titre='$titre', descrip='$description', Durée='$duree', Date_post=' $date_post', nombre_places=' $nombre_places',
+      $sql = "UPDATE offre SET Titre='$titre', Description='$description', Durée='$duree', Date_post=' $date_offre', nombre_places=' $nombre_de_places',
       Remuneration='  $remuneration', valide = '$validite'  WHERE id_offre = '$id_offre'  ";
 
       $stmt = $pdo->exec($sql);
@@ -38,7 +38,6 @@ if (isset($_POST['updateOffre'])) {
             $_SESSION['status'] = "Modification réussie";
             header("Location: listOffre.php");
       } else {
-            $_SESSION['status'] = "Erreur";
-            header("Location: listOffre.php");
+            echo "erreur";
       }
 }

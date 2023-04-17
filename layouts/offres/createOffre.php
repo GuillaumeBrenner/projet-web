@@ -9,6 +9,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 // Include config file
 require_once "../../config.php";
+
+$req = "SELECT * from entreprise";
+$entSel = $pdo->query($req);
+$noms = $entSel->fetchAll(PDO::FETCH_ASSOC);
+
+$req = "SELECT * from ville";
+$villeSel = $pdo->query($req);
+$villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,16 +35,7 @@ require_once "../../config.php";
       <div class="container mt-5">
             <div class="card">
                   <h1 class="Offre card-header"> Créer une Offre</h1>
-                  <?php
-            $req = "SELECT * from entreprise";
-            $entSel = $pdo->query($req);
 
-            $req = "SELECT * from ville";
-            $villeSel = $pdo->query($req);
-
-            if ($entSel && $villeSel) {
-
-            ?>
                   <div class="card-body">
                         <form action="insertion.php" method="post">
                               <div class="row">
@@ -45,7 +44,8 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput" class="form-label Offre">Titre</label>
                                                       <input type="Text" class="form-control"
-                                                            id="exampleFormControlInput1" name="Titre" placeholder="">
+                                                            id="exampleFormControlInput1" name="Titre" placeholder=""
+                                                            require>
                                                 </div>
                                           </div>
                                     </div>
@@ -55,13 +55,13 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput" class="form-label Offre">Nom
                                                             Entreprise</label>
-                                                      <select name="entreprise" id="SelectEntreprise"
-                                                            class="form-select" aria-label="Default select example">
-                                                            <?php 
-                                          while($tab = $entSel->fetch()){
-                                                echo '<option value="'.$tab[0].'">'.$tab[1].' '.$tab[2].'</option>';
-                                          }
-                                          ?>
+                                                      <select name="entreprise" id="entreprise" class="form-select"
+                                                            aria-label="Default select example">
+                                                            <?php
+                                                            foreach ($noms as $nom) {
+                                                                  echo "<option value='{$nom['nom']}'>{$nom['nom']}</option>";
+                                                            }
+                                                            ?>
                                                       </select>
                                                 </div>
                                           </div>
@@ -73,8 +73,8 @@ require_once "../../config.php";
                                                       <label for="FormInput" class="form-label Offre">Durée de
                                                             Stage</label>
                                                       <input type="Text" class="form-control"
-                                                            id="exampleFormControlInput1" name="Durée_de_Stage"
-                                                            placeholder="">
+                                                            id="exampleFormControlInput1" name="Durée" placeholder=""
+                                                            require>
                                                 </div>
                                           </div>
                                     </div>
@@ -86,7 +86,7 @@ require_once "../../config.php";
                                                             class="form-label Offre">Rémunération</label>
                                                       <input type="Text" class="form-control"
                                                             id="exampleFormControlInput1" name="Rémunération"
-                                                            placeholder="">
+                                                            placeholder="" require>
                                                 </div>
                                           </div>
                                     </div>
@@ -97,8 +97,8 @@ require_once "../../config.php";
                                                       <label for="FormInput" class="form-label Offre">Date de
                                                             l'Offre</label>
                                                       <input type="date" class="form-control"
-                                                            id="exampleFormControlInput1" name="Date_offre"
-                                                            placeholder="">
+                                                            id="exampleFormControlInput1" name="Date_post"
+                                                            placeholder="" require>
                                                 </div>
                                           </div>
                                     </div>
@@ -109,8 +109,8 @@ require_once "../../config.php";
                                                       <label for="FormInput" class="form-label Offre">Nombre de
                                                             places</label>
                                                       <input type="Text" class="form-control"
-                                                            id="exampleFormControlInput1" name="Nombre_de_places"
-                                                            placeholder="">
+                                                            id="exampleFormControlInput1" name="nombre_places"
+                                                            placeholder="" require>
                                                 </div>
                                           </div>
                                     </div>
@@ -121,29 +121,24 @@ require_once "../../config.php";
                                                       <label for="FormInput Description"
                                                             class="form-label Offre">Description</label>
                                                       <input type="Text" class="form-control Description"
-                                                            id="exampleFormControlInput1" name="description"
-                                                            placeholder="">
+                                                            id="exampleFormControlInput1" name="Description"
+                                                            placeholder="" require>
                                                 </div>
                                           </div>
                                     </div>
 
                                     <div class="mb-3">
                                           <label for="FormInput" class="form-label Offre">Site</label>
-                                          <div class="row">
-
-                                                <div class="col loc">
-                                                      <div class="mb-3">
-                                                            <select name="ville" id="SelectVille" class="form-select"
-                                                                  aria-label="Default select example">
-                                                                  <?php 
-                                          while($tab = $villeSel->fetch()){
-                                                echo '<option value="'.$tab[0].'">'.$tab[1].' '.$tab[2].'</option>';
-                                          }
-                                          ?>
-                                                            </select>
-                                                      </div>
-                                                </div>
-
+                                          <div class="mb-3">
+                                                <input class="form-control" list="datalistOptions" id="ville"
+                                                      name="ville" placeholder="Commencez à ecrire...">
+                                                <datalist id="datalistOptions">
+                                                      <?php
+                                                            foreach ($villes as $ville) {
+                                                                  echo "<option value='{$ville['ville']}'>{$ville['ville']}</option>";
+                                                            }
+                                                            ?>
+                                                </datalist>
                                           </div>
                                     </div>
                               </div>
@@ -152,8 +147,7 @@ require_once "../../config.php";
 
                         </form>
                   </div>
-                  <?php
-            } ?>
+
             </div>
       </div>
 

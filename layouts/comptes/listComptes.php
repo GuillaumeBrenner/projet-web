@@ -82,7 +82,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                     <div class="col-12">
                                           <div class="mt-5 mb-3">
                                                 <h2 class="pull-left">
-                                                      <div class="dropdown mb-3">
+                                                      <!-- <div class="dropdown mb-3">
                                                             <button class="btn btn-secondary dropdown-toggle"
                                                                   type="button" data-bs-toggle="dropdown"
                                                                   aria-expanded="false">
@@ -93,7 +93,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                                   <li><a class="dropdown-item" href="#">Etudiants</a>
                                                             </ul>
                                                       </div>
-                                                      <!--<div>
+                                                      <div>
                                                             <form class="d-flex" role="search">
                                                                   <input class="form-control me-2" type="search"
                                                                         placeholder="" aria-label="Search">
@@ -106,12 +106,11 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                 <?php
 
                                                 if ($_SESSION['id'] == 1) {
-                                                      echo '<a href="" class="btn btn-primary pull-right" data-toggle="tooltip" data-bs-toggle="modal"
+                                                      echo '<a href="" class="btn btn-primary pull-left mb-3" data-toggle="tooltip" data-bs-toggle="modal"
                                                       data-bs-target="#choiceModal"><i
                                                       class="fa fa-plus"></i>
                                                 Créer un compte</a>';
                                                 echo '<div class="modal-dialog modal-dialog-centered">
-                                                ...
                                               </div>';
                                                 } ?>
 
@@ -122,7 +121,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                     require_once "../../config.php";
 
                                     // Attempt select query execution
-                                    $sql = "SELECT compte.id_c ,personne.Nom , personne.Prenom , personne.sexe FROM `compte` LEFT JOIN `personne` ON `compte`.`id_personne` = `personne`.`id_personne` WHERE `personne`.`id_personne` = `personne`.`id_personne` AND compte.validite = 1;";
+                                    $sql = "SELECT compte.id_c ,personne.Nom , personne.Prenom , personne.sexe FROM `compte` LEFT JOIN `personne` ON `compte`.`id_personne` = `personne`.`id_personne` WHERE `personne`.`id_personne` = `personne`.`id_personne` c;";
                                     if ($result = $pdo->query($sql)) {
                                           if ($result->rowCount() > 0) {
                                                 echo '<div class="col-md-12">';
@@ -148,49 +147,26 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                       data-bs-target="#compte"><span class="fa fa-eye"></span></a>';
                                                       echo '<a href="update.php?id=' . $row['id_c'] . '" class="ms-3" title="Modifier" data-toggle="tooltip" data-bs-toggle="modal"
                                                       data-bs-target="#ModificationProfil"><span class="fa fa-pencil"></span></a>';
-                                                      echo '<a href="#" class="ms-3" data-bs-toggle="modal" data-bs-target="#deleteCModal"><span class="fa fa-trash"></span></a>';;
+                                                      echo '<form action="delete.php" method="post" onSubmit="return confirm(' . "'êtes-vous sûr de vouloir supprimer?' " . ')">
+                                                                  <button type="submit" name="id_compte" value="' . $row['id_c'] . '" class="btn-link"><span class="fa fa-trash"></span></button>
+                                                            </form>';
                                                       echo "</td>";
                                                       echo "</tr>";
-                                                      ?>
-                                    <!--MODAL DE SUPPRESSION  -->
-                                    <div class="modal fade" id="deleteCModal" tabindex="-1" role="dialog"
-                                          aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                      <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                                  Suppression
-                                                            </h1>
-                                                            <button type="button" class="btn-close"
-                                                                  data-bs-dismiss="modal" aria-label="Close"></button>
-                                                      </div>
-                                                      <div class="modal-body">
-                                                            <h4>Voulez-vous vraiment supprimer cette Compte?</h4>
-                                                      </div>
-                                                      <div class="modal-footer">
-                                                            <button type="button" class="btn btn-outline-secondary"
-                                                                  data-bs-dismiss="modal">Annuler</button>
-                                                            <?php echo '<a class="btn btn-danger" href="delete.php?id_c=' . $row['id_c'] . '">Supprimer</a>' ?>
-                                                      </div>
-                                                </div>
-                                          </div>
-                                    </div>
-                                    <?php }
-                                    echo "</tbody>";
-                                    echo "</table>";
-                                    echo "
-                              </div>";
-                              // Free result set
-                              unset($result);
-                              } else {
-                              echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
-                              }
-                              } else {
-                              echo "Oops! Réessayer plus tard.";
-                              }
-                              // Close connection
-                              unset($pdo);
-                              ?>
+                                                }
+                                                echo "</tbody>";
+                                                echo "</table>";
+                                                echo "</div>";
+                                                // Free result set
+                                                unset($result);
+                                          } else {
+                                                echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
+                                          }
+                                    } else {
+                                          echo "Oops! Réessayer plus tard.";
+                                    }
+                                    // Close connection
+                                    unset($pdo);
+                                    ?>
 
                               </div>
                         </div>
@@ -270,6 +246,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                   <div class="modal-body text-center">
                         <a href="createPilote.php" type="button" class="btn btn-secondary btn-lg">Pilote</a>
                         <a href="createEtudiant.php" type="button" class="btn btn-secondary btn-lg ms-5">Etudiant</a>
+                        <a href="createPro.php" type="button" class="btn btn-secondary btn-lg ms-5">Pro</a>
                   </div>
                   <div class="modal-footer">
                   </div>

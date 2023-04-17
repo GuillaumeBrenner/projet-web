@@ -87,7 +87,7 @@ require_once "../../config.php";
                                                       <label for="FormInput" class="form-label Offre">Nom
                                                       </label>
                                                       <input type="text" class="form-control" id="nom" name="nom"
-                                                            placeholder="" required>
+                                                            placeholder="">
                                                 </div>
                                           </div>
                                     </div>
@@ -108,7 +108,7 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="Description" class="form-label Offre">Login</label>
                                                       <input type="Text" class="form-control Description" id="login"
-                                                            name="login" placeholder="" required>
+                                                            name="login" placeholder="">
                                                 </div>
                                           </div>
                                     </div>
@@ -119,8 +119,7 @@ require_once "../../config.php";
                                                       <label for="FormInput Description" class="form-label Offre">Mot de
                                                             passe</label>
                                                       <input type="Text" class="form-control Description"
-                                                            id="mdp multiple-select-field" name="mdp" placeholder=""
-                                                            required>
+                                                            id="mdp multiple-select-field" name="mdp" placeholder="">
                                                 </div>
                                           </div>
                                     </div>
@@ -149,7 +148,12 @@ require_once "../../config.php";
                                                       <datalist id="datalistOptions">
                                                             <?php
                                                                   while ($tab = $villeSel->fetch()) {
-                                                                        echo '<option value="' . $tab[1] . '(' . $tab[2]. ')' . '">'  . '</option>';
+                                                                        $code_postal = $tab[2];
+                                                                        /* rajoute un zero devant si le code postal est a 4 chiffres */
+                                                                        if (strlen($code_postal) == 4) {
+                                                                              $code_postal = '0' . $code_postal;
+                                                                        }
+                                                                        echo '<option value="' . $tab[1] . '(' . $code_postal. ')' . '">'  . '</option>';
                                                                   }
                                                             ?>
                                                       </datalist>

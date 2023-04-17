@@ -118,7 +118,7 @@ require_once "../../config.php";
                         require_once "../../config.php";
 
                         // Attempt select query execution
-                        $sql = "SELECT * FROM entreprise";
+                        $sql = "SELECT * FROM entreprise WHERE validite = 1";
                         if ($result = $pdo->query($sql)) {
                               if ($result->rowCount() > 0) {
                                     echo '<div class="col-md-12">';
@@ -142,7 +142,9 @@ require_once "../../config.php";
                                           echo '<a href="viewEnt.php?id=' . $row['id_entreprise'] . '" title="Voir" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                           if ($_SESSION['id'] == 1 || $_SESSION['id'] == 4) {
                                                 echo '<a href="#" class="ms-3 editbtn"><span class="fa fa-pencil"></span></a>';
-                                                echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
+                                                echo '<form action="delete.php" method="post" onSubmit="return confirm(' . "'êtes-vous sûr de vouloir supprimer?' " . ')">
+                                                                  <button type="submit" name="id_entreprise" value="' . $row['id_entreprise'] . '" class="btn-link"><span class="fa fa-trash"></span></button>
+                                                      </form>';
                                           }
                                           echo '<a href="delete.php?id=' . $row['id_entreprise'] . '" title="Statistique" class="ms-3"><span class="fa fa-signal"></span></a>';
                                           echo "</td>";
@@ -308,32 +310,6 @@ require_once "../../config.php";
 
 
 <!--MODAL DE SUPPRESSION  -->
-<div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <form action="delete.php" method="POST">
-                        <div class="modal-body">
-                              <input type="hidden" name="delete_id" id="id_entreprise">
-                              <h4>Voulez-vous vraiment supprimer cette entreprise?</h4>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="button" class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Annuler</button>
-                              <button type="submit" name="deletedata" class="btn btn-danger"> Supprimer
-                              </button>
-                        </div>
-                  </form>
-            </div>
-      </div>
-</div>
-
-<!--MODAL DE EVALUER  -->
 <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
       <div class="modal-dialog" role="document">

@@ -7,6 +7,8 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
       header("Location: ../../login.php");
       exit;
 }
+
+require_once "../../config.php";
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,7 +29,20 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
 </head>
 
 <body>
+      <?php
+            $req = $pdo->prepare("SELECT COUNT(id_c) FROM `compte` WHERE validite = 1");
+            $req->execute();
+            $nbcompte = $req->fetchColumn();
+            
+            $req = $pdo->prepare("SELECT COUNT(id_entreprise) FROM `entreprise` WHERE validite = 1");
+            $req->execute();
+            $nbent = $req->fetchColumn();
+            
+            $req = $pdo->prepare("SELECT COUNT(id_offre) FROM `offre` WHERE valide = 1");
+            $req->execute();
+            $nboffre = $req->fetchColumn();
 
+      ?>
       <!-- Navbar -->
       <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light">
@@ -83,7 +98,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                               <h1 class="h1 mb-0">PARAMETRES</h1>
                         </div>
                         <div class="row">
-                              <div class="col-xl-3 col-md-6 mb-4">
+                              <div class="col-xl-4 col-md-6 mb-4">
                                     <div class="card border-left-success shadow h-100 py-2">
                                           <div class="card-body">
                                                 <div class="row no-gutters">
@@ -94,7 +109,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                                                         class="btn btn-primary"> Gérer les
                                                                         comptes</a>
                                                                   <div class="h2 mb-0 font-weight-bold text-gray-800">
-                                                                        50
+                                                                        <?php echo $nbcompte; ?>
                                                                   </div>
                                                             </div>
                                                       </div>
@@ -106,7 +121,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                     </div>
                               </div>
 
-                              <div class="col-xl-3 col-md-6 mb-4">
+                              <div class="col-xl-4 col-md-6 mb-4">
                                     <div class="card border-left-success shadow h-100 py-2">
                                           <div class="card-body">
                                                 <div class="row no-gutters">
@@ -118,7 +133,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                                                         Gérer les entreprises
                                                                   </a>
                                                                   <div class="h2 mb-0 font-weight-bold text-gray-800">
-                                                                        50
+                                                                        <?php echo $nbent; ?>
                                                                   </div>
                                                             </div>
                                                       </div>
@@ -130,7 +145,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                     </div>
                               </div>
 
-                              <div class="col-xl-3 col-md-6 mb-4">
+                              <div class="col-xl-4 col-md-6 mb-4">
                                     <div class="card border-left-success shadow h-100 py-2">
                                           <div class="card-body">
                                                 <div class="row no-gutters">
@@ -141,7 +156,7 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                                                         class="btn btn-primary">
                                                                         Gérer les stages</a>
                                                                   <div class="h2 mb-0 font-weight-bold text-gray-800">
-                                                                        50
+                                                                        <?php echo $nboffre; ?>
                                                                   </div>
                                                             </div>
                                                       </div>
@@ -154,37 +169,11 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
                                     </div>
                               </div>
 
-                              <div class="col-xl-3 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
-                                          <div class="card-body">
-                                                <div class="row no-gutters">
-                                                      <div class="col mr-2">
-                                                            <div
-                                                                  class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                                  <a href="../comptes/listComptes.php"
-                                                                        class="btn btn-primary">
-                                                                        Gérer les candidatures</a>
-                                                            </div>
-                                                            <div class="h2 mb-0 font-weight-bold text-gray-800"> 50
-                                                            </div>
-                                                      </div>
-                                                      <div class="col-auto">
-                                                            <i class="fas fa-calendar-check fa-3x text-gray-300"></i>
-                                                      </div>
-                                                </div>
-                                          </div>
-
-                                    </div>
-                              </div>
                         </div>
                   </div>
             </div>
             <!-- /.container-fluid -->
       </div>
-
-      <?php
-      include '../footer.php';
-      ?>
 
       <script src="./assets/vendors/jquery/jquery-3.6.0.min.js"></script>
       <script src="./assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>

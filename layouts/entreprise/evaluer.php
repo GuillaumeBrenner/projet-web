@@ -24,7 +24,7 @@
       <div class="container">
             <h1 class="mt-5 mb-5">EVALUATION</h1>
             <div class="card">
-                  <div class="card-header">Sample Product</div>
+                  <div class="card-header">Entreprise</div>
                   <div class="card-body">
                         <div class="row">
                               <div class="col-sm-4 text-center">
@@ -44,6 +44,7 @@
                                     <h3 class="mt-4 mb-3">Evaluer ici</h3>
                                     <button type="button" name="add_review" id="add_review"
                                           class="btn btn-primary">Cliquez</button>
+                                    <a href="listEntreprise.php" id="add_review" class="btn btn-primary">Retourner</a>
                               </div>
                         </div>
                   </div>
@@ -71,12 +72,11 @@
                               <i class="fas fa-star star-light submit_star mr-1" id="submit_star_5" data-rating="5"></i>
                         </h4>
                         <div class="form-group">
-                              <input type="text" name="note" id="note" class="form-control"
-                                    placeholder="Enter Your Name" />
+                              <input type="text" name="note" id="note" class="form-control" placeholder="" />
                         </div>
                         <div class="form-group">
                               <textarea name="commentaire" id="commentaire" class="form-control"
-                                    placeholder="Type Review Here"></textarea>
+                                    placeholder=""></textarea>
                         </div>
                         <div class="form-group text-center mt-4">
                               <button type="button" class="btn btn-primary" id="save_review">Soumettre</button>
