@@ -3,7 +3,7 @@
 session_start();
 
 // Check if the user is logged in, if not then redirect him to login page
-if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
+if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
       header("Location: ../../login.php");
       exit;
 }
@@ -80,6 +80,27 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                         <div class="container-fluid">
                               <div class="row">
                                     <div class="col-12">
+                                          <h1>Liste des Comptes</h1>
+                                          <?php
+                                          if (isset($_SESSION['status'])) {
+                                          ?>
+                                          <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <?php echo $_SESSION['status']; ?>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                      aria-label="Close"></button>
+                                          </div>
+                                          <?php unset($_SESSION['status']);
+                                          } ?>
+                                          <?php
+                                          if (isset($_SESSION['supp'])) {
+                                          ?>
+                                          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <?php echo $_SESSION['supp']; ?>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                      aria-label="Close"></button>
+                                          </div>
+                                          <?php unset($_SESSION['supp']);
+                                          } ?>
                                           <div class="mt-5 mb-3">
                                                 <h2 class="pull-left">
                                                       <!-- <div class="dropdown mb-3">
@@ -93,15 +114,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                                   <li><a class="dropdown-item" href="#">Etudiants</a>
                                                             </ul>
                                                       </div>
-                                                      <div>
-                                                            <form class="d-flex" role="search">
-                                                                  <input class="form-control me-2" type="search"
-                                                                        placeholder="" aria-label="Search">
-                                                                  <button class="btn btn-outline-success"
-                                                                        type="submit"><i class="fa fa-search"></i>
-                                                                  </button>
-                                                            </form>
-                                                      </div>-->
+                                                 -->
                                                 </h2>
                                                 <?php
 
@@ -110,7 +123,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                       data-bs-target="#choiceModal"><i
                                                       class="fa fa-plus"></i>
                                                 Créer un compte</a>';
-                                                echo '<div class="modal-dialog modal-dialog-centered">
+                                                      echo '<div class="modal-dialog modal-dialog-centered">
                                               </div>';
                                                 } ?>
 
@@ -121,7 +134,11 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                     require_once "../../config.php";
 
                                     // Attempt select query execution
-                                    $sql = "SELECT compte.id_c ,personne.Nom , personne.Prenom , personne.sexe FROM `compte` LEFT JOIN `personne` ON `compte`.`id_personne` = `personne`.`id_personne` WHERE `personne`.`id_personne` = `personne`.`id_personne` c;";
+                                    $sql = "SELECT compte.id_c, personne.id_personne, personne.Nom , personne.Prenom , personne.sexe, type_compte.type 
+                                    FROM compte 
+                                    JOIN personne ON compte.id_personne = personne.id_personne
+                                    JOIN type_compte ON compte.id_type = type_compte.id_type
+                                    WHERE validite = 1";
                                     if ($result = $pdo->query($sql)) {
                                           if ($result->rowCount() > 0) {
                                                 echo '<div class="col-md-12">';
@@ -132,6 +149,7 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                 echo "<th>Nom</th>";
                                                 echo "<th>Prénom</th>";
                                                 echo "<th>Sexe</th>";
+                                                echo "<th>Type de compte</th>";
                                                 echo "<th>Action</th>";
                                                 echo "</tr>";
                                                 echo "</thead>";
@@ -142,14 +160,12 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
                                                       echo "<td>" . $row['Nom'] . "</td>";
                                                       echo "<td>" . $row['Prenom'] . "</td>";
                                                       echo "<td>" . $row['sexe'] . "</td>";
+                                                      echo "<td>" . $row['type'] . "</td>";
                                                       echo "<td>";
-                                                      echo '<a href="viewProfil.php?id=' . $row['id_c'] . '" title="Details"
+                                                      echo '<a href="viewProfil.php?id=' . $row['id_personne'] . '" title="Details"
                                                       data-bs-target="#compte"><span class="fa fa-eye"></span></a>';
-                                                      echo '<a href="update.php?id=' . $row['id_c'] . '" class="ms-3" title="Modifier" data-toggle="tooltip" data-bs-toggle="modal"
-                                                      data-bs-target="#ModificationProfil"><span class="fa fa-pencil"></span></a>';
-                                                      echo '<form action="delete.php" method="post" onSubmit="return confirm(' . "'êtes-vous sûr de vouloir supprimer?' " . ')">
-                                                                  <button type="submit" name="id_compte" value="' . $row['id_c'] . '" class="btn-link"><span class="fa fa-trash"></span></button>
-                                                            </form>';
+                                                      echo '<a href="#" class="ms-3 editbtn"><span class="fa fa-pencil"></span></a>';
+                                                      echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
                                                       echo "</td>";
                                                       echo "</tr>";
                                                 }
@@ -184,55 +200,128 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
 
 </html>
 
-<div class="modal fade" id="compte" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+
+<!-- SCRIPT js POUR LA MODIFICATION -->
+<script>
+$(document).ready(function() {
+
+      $('.editbtn').on('click', function() {
+
+            $('#editCompte').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function() {
+                  return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#id_personne').val(data[0]);
+            $('#Nom').val(data[1]);
+            $('#Prenom').val(data[2]);
+            $('#sexe').val(data[3]);
+      });
+});
+</script>
+
+<!-- MODIFICATION DE L'OFFRE MODAL -->
+<div class="modal fade" id="editCompte" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
             <div class="modal-content">
                   <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Compte</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'offre</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-                  <div class="modal-body">
-                        ...
-                  </div>
-                  <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                  </div>
+                  <form action="updateCompte.php" method="post">
+                        <div class="modal-body">
+                              <div class="row">
+                                    <input type="hidden" name="id_personne" id="id_personne">
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label">Nom</label>
+                                                      <input type="Text" class="form-control" id="Nom" name="Nom">
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label">Prénom</label>
+                                                      <input type="Text" class="form-control" id="Prenom" name="Prenom">
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label">Sexe</label>
+                                                      <select class="form-select" name="sexe"
+                                                            aria-label="Default Select example">
+                                                            <option value="Masculin">Masculin</option>
+                                                            <option value="Féminin">Féminin</option>
+                                                            <option value="O">Ne se prononce pas</option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+
+                        </div>
+                        <div class="modal-footer">
+                              <button type="button" class="btn btn-outline-danger"
+                                    data-bs-dismiss="modal">Annuler</button>
+                              <button type="submit" name="updateCompte" class="btn btn-primary">Sauvegarder</button>
+                        </div>
+                  </form>
             </div>
       </div>
 </div>
 
-<div class="modal fade" id="ModificationProfil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-            <div class="modal-content">
-                  <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification du profil</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                        ...
-                  </div>
-                  <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-primary">Sauvegarder</button>
-                  </div>
-            </div>
-      </div>
-</div>
+<!-- SCRIPT js POUR LA SUPPRESSION  -->
+<script>
+$(document).ready(function() {
 
-<div class="modal fade" id="Supprimerprofil" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      $('.deletebtn').on('click', function() {
+
+            $('#deletemodal').modal('show');
+
+            $tr = $(this).closest('tr');
+
+            var data = $tr.children("td").map(function() {
+                  return $(this).text();
+            }).get();
+
+            console.log(data);
+
+            $('#id_c').val(data[0]);
+
+      });
+});
+</script>
+
+<div class="modal fade" id="deletemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
             <div class="modal-content">
                   <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-                  <div class="modal-body">
-                        Voulez-vous vraiment supprimer ce profil?
-                  </div>
-                  <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-danger">Supprimer</button>
-                  </div>
+                  <form action="deleteCompte.php" method="post">
+                        <div class="modal-body">
+                              <input type="hidden" name="id_c" id="id_c">
+                              <h4>Voulez-vous vraiment supprimer ce compte?</h4>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Annuler</button>
+                              <button type="submit" name="deleteCompte" class="btn btn-danger"> Supprimer
+                              </button>
+                        </div>
+                  </form>
             </div>
       </div>
 </div>
@@ -253,3 +342,12 @@ if ($_SESSION["id"]!==1 || $_SESSION["loggedin"] !== true) {
             </div>
       </div>
 </div>
+
+<!-- MESSAGE DE REUSSITE CREATION (Bootstrap ALERT) -->
+<script>
+window.setTimeout(function() {
+      $(".alert").fadeTo(500, 0).slideUp(500, function() {
+            $(this).remove();
+      });
+}, 3000);
+</script>

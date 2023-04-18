@@ -96,6 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               </div>
 
                         </div>
+
                         <div class="row mb-4">
                               <label class="col-sm-6 col-form-label">Mot de passe</label>
                               <div class="col-sm-4">

@@ -20,7 +20,7 @@ $(document).ready(function() {
                   "loadingRecords": "Loading...",
                   "processing": "",
                   "search": "Rechercher",
-                  "zeroRecords": "No matching records found",
+                  "zeroRecords": "Aucune donnée ne correspond a votre recherche",
                   "paginate": {
                         "first": "Premier",
                         "last": "Dernier",

@@ -18,7 +18,7 @@ require_once "../../config.php";
 <head>
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Liste des offres</title>
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css" />
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css" />
@@ -229,7 +229,7 @@ require_once "../../config.php";
                         <form action="deleteOffre.php" method="post">
                               <div class="modal-body">
                                     <input type="hidden" name="id_o" id="id_o">
-                                    <h4>Voulez-vous vraiment supprimer cet offre?</h4>
+                                    <h4>Voulez-vous vraiment supprimer cette offre?</h4>
                               </div>
                               <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-secondary"
@@ -311,8 +311,7 @@ require_once "../../config.php";
                                           <div class="form-group">
                                                 <div class="mb-3">
                                                       <label class="form-label Offre">Titre</label>
-                                                      <input type="Text" class="form-control" id="Titre" name="Titre"
-                                                            placeholder="">
+                                                      <input type="Text" class="form-control" id="Titre" name="Titre">
                                                 </div>
                                           </div>
                                     </div>
@@ -339,8 +338,7 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label class="form-label Offre">Durée de
                                                             Stage</label>
-                                                      <input type="Text" class="form-control" id="Durée" name="Durée"
-                                                            placeholder="">
+                                                      <input type="Text" class="form-control" id="Durée" name="Durée">
                                                 </div>
                                           </div>
                                     </div>
@@ -350,7 +348,7 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label class="form-label Offre">Rémunération</label>
                                                       <input type="Text" class="form-control" id="Rémunération"
-                                                            name="Rémunération" placeholder="">
+                                                            name="Rémunération">
                                                 </div>
                                           </div>
                                     </div>
@@ -361,7 +359,7 @@ require_once "../../config.php";
                                                       <label class="form-label Offre">Date de
                                                             l'Offre</label>
                                                       <input type="date" class="form-control" id="Date_post"
-                                                            name="Date_post" placeholder="">
+                                                            name="Date_post">
                                                 </div>
                                           </div>
                                     </div>
@@ -372,7 +370,7 @@ require_once "../../config.php";
                                                       <label class="form-label Offre">Nombre de
                                                             places</label>
                                                       <input type="Text" class="form-control" id="nombre_places"
-                                                            name="nombre_places" placeholder="">
+                                                            name="nombre_places">
                                                 </div>
                                           </div>
                                     </div>
@@ -382,7 +380,7 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label class="form-label Offre">Description</label>
                                                       <input type="Text" class="form-control Description" id="descrip"
-                                                            name="descrip" placeholder="">
+                                                            name="descrip">
                                                 </div>
                                           </div>
                                     </div>

@@ -16,17 +16,16 @@ require_once "../../config.php";
 <head>
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Profil</title>
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css" />
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css" />
       <link rel="stylesheet" href="../../style.css" type="text/css" />
 
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
-            integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous">
-      </script>
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
 </head>
 
 <body>
@@ -80,7 +79,7 @@ require_once "../../config.php";
             <div class="container">
                   <?php
                   require_once "../../config.php";
-                  $sql = 'SELECT p.Nom, p.Prenom, pr.nom_promo, v.ville
+                  $sql = 'SELECT *
                         FROM personne p
                         INNER JOIN compte c ON p.id_personne = c.id_personne 
                         INNER JOIN etre_promo e ON c.id_c = e.id_c
@@ -94,11 +93,12 @@ require_once "../../config.php";
                               while ($row = $result->fetch()) {
                   ?>
                   <div class="card text-center mb-5">
-                        <div class="row g-0">
-                              <div class="col-md-4">
-                                    <img src="" alt="" class="img-fluid rounded-start" />
+                        <div class="row">
+                              <div class="col-md-6">
+                                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($row['photo_profil']); ?>"
+                                          class="img-fluid rounded-start" />
                               </div>
-                              <div class="col-md-8">
+                              <div class="col-md-6">
                                     <div class="card-body">
                                           <h1><?= $row['Nom'] ?> <?= $row['Prenom'] ?></h1>
                                           <h2>
@@ -116,9 +116,127 @@ require_once "../../config.php";
                         <div class="card-body">
                               <div class="row">
                                     <div class="col-12">
-                                          <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                          <button type="button" class="btn btn-warning editbtn" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal">Modifier</button>
                                     </div>
+                              </div>
+                        </div>
+                        <?php
+                                          if (isset($_SESSION['status'])) {
+                                          ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                              <?php echo $_SESSION['status']; ?>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['status']);
+                                          } ?>
+                        <?php
+                                          if (isset($_SESSION['supp'])) {
+                                          ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                              <?php echo $_SESSION['supp']; ?>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                        <?php unset($_SESSION['supp']);
+                                          } ?>
+                  </div>
+
+                  <!-- MODIFICATION DE PROFIL MODAL -->
+                  <div class="modal fade" id="editProfil" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                          <h1 class="modal-title fs-5" id="exampleModalLabel">Modification du profil
+                                          </h1>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <form action="updateProfil.php" method="post">
+                                          <div class="modal-body">
+                                                <div class="row">
+                                                      <input type="hidden" name="id_c" id="id_c"
+                                                            value="<?= $row['id_c'] ?>">
+                                                      <input type="hidden" name="id_p" id="id_p"
+                                                            value="<?= $row['id_personne'] ?>">
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label">Nom</label>
+                                                                        <input type="Text" class="form-control" id="Nom"
+                                                                              name="Nom" value="<?= $row['Nom'] ?>">
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label Offre">Prénom</label>
+                                                                        <input type="Text" class="form-control"
+                                                                              id="Prenom" name="Prenom"
+                                                                              value="<?= $row['Prenom'] ?>">
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label">Sexe</label>
+                                                                        <select class="form-select" name="sexe">
+                                                                              <option value="Masculin">Masculin</option>
+                                                                              <option value="Féminin">Féminin</option>
+                                                                              <option value="O">Ne se prononce pas
+                                                                              </option>
+                                                                        </select>
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label Offre">Centre</label>
+                                                                        <input type="Text" class="form-control"
+                                                                              id="centre" name="centre"
+                                                                              value="<?= $row['ville'] ?>">
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label Offre">Login</label>
+                                                                        <input type="Text" class="form-control"
+                                                                              id="login" name="login"
+                                                                              value="<?= $row['login'] ?>">
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+
+                                                      <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                  <div class="mb-3">
+                                                                        <label class="form-label Offre">MDP</label>
+                                                                        <input type="password" class="form-control"
+                                                                              id="mdp" name="mdp"
+                                                                              value="<?= $row['mdp'] ?>">
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+                                                </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-danger"
+                                                      data-bs-dismiss="modal">Annuler</button>
+                                                <button type="submit" name="updateProfil"
+                                                      class="btn btn-primary">Sauvegarder</button>
+                                          </div>
+                                    </form>
                               </div>
                         </div>
                   </div>
@@ -224,8 +342,7 @@ require_once "../../config.php";
                                                       echo "<td>";
                                                       echo '<a href="../offres/viewOffre.php?id=' . $row['id_offre'] . '" title="Details"
                                                 data-bs-target="#compte"><span class="fa fa-eye"></span></a>';
-                                                      echo '<a href="delete.php?id=' . $row['id_offre'] . '" class="ms-3" title="Supprimer" data-toggle="tooltip" data-bs-toggle="modal"
-                                                data-bs-target="#Supprimerprofil"><span class="fa fa-trash"></span></a>';
+                                                      echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
                                                       echo "</td>";
                                                       echo "</tr>";
                                                 }
@@ -251,32 +368,68 @@ require_once "../../config.php";
             ?>
       </div>
 
-      <script src="./assets/vendors/jquery/jquery-3.6.0.min.js"></script>
-      <script src="./assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Script datatable -->
+      <?php
+      include '../../datatable.php'
+      ?>
 
-      <!-- SCRIPT js POUR LA MODIFICATION -->
+      <!-- SCRIPT js POUR LA SUPPRESSION  -->
       <script>
       $(document).ready(function() {
 
-            $('.editbtn').on('click', function() {
+            $('.deletebtn').on('click', function() {
 
-                  $('#editOffre').modal('show');
+                  $('#deletemodal').modal('show');
 
                   $tr = $(this).closest('tr');
 
-                  var data = $tr.children("td").map(function() {
-                        return $(this).text();
-                  }).get();
+                  var data = $tr.children("td").map(
+                        function() {
+                              return $(this).text();
+                        }).get();
 
                   console.log(data);
 
-                  $('#id_offre').val(data[0]);
-                  $('#Titre').val(data[1]);
-                  $('#Date_offre').val(data[3]);
-                  $('#Durée_de_Stage').val(data[2]);
-                  $('#Nombre_de_places').val(data[4]);
-                  $('#Rémunération').val(data[5]);
-                  $('#description').val(data[6]);
+                  $('#id_o').val(data[0]);
+
+            });
+      });
+      </script>
+
+      <!--MODAL DE SUPPRESSION  -->
+      <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                    Suppression
+                              </h1>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <form action="deleteWish.php" method="post">
+                              <div class="modal-body">
+                                    <input type="hidden" name="id_o" id="id_o">
+                                    <h4>Voulez-vous vraiment retirer cette offre de
+                                          la liste?</h4>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                          data-bs-dismiss="modal">Annuler</button>
+                                    <button type="submit" name="deleteOffre" class="btn btn-danger"> Retirer
+                                    </button>
+                              </div>
+                        </form>
+                  </div>
+            </div>
+      </div>
+
+      <!-- SCRIPT js POUR LA MODIFICATION DU PROFIL-->
+      <script>
+      $(document).ready(function() {
+            $('.editbtn').on('click', function() {
+                  $('#editProfil').modal('show');
             });
       });
       </script>
@@ -284,117 +437,11 @@ require_once "../../config.php";
 
 </html>
 
-<!-- MODIFICATION DE L'OFFRE MODAL -->
-<div class="modal fade" id="editOffre" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                  <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification du profil</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <?php
-                  $pdo = new PDO("mysql:host=localhost;dbname=projetWeb", "root", "");
-                  $req = "SELECT * from entreprise";
-                  $entSel = $pdo->query($req);
-
-
-                  if ($entSel) {
-
-                  ?>
-                  <form action="updateOffre.php" method="post">
-                        <div class="modal-body">
-                              <div class="row">
-                                    <input type="hidden" name="id_offre" id="id_offre">
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Titre</label>
-                                                      <input type="Text" class="form-control" id="Titre" name="Titre"
-                                                            placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Durée de
-                                                            Stage</label>
-                                                      <input type="Text" class="form-control" id="Durée_de_Stage"
-                                                            name="Durée_de_Stage" placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Date de
-                                                            l'Offre</label>
-                                                      <input type="date" class="form-control" id="Date_offre"
-                                                            name="Date_offre" placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Nombre de
-                                                            places</label>
-                                                      <input type="Text" class="form-control" id="Nombre_de_places"
-                                                            name="Nombre_de_places" placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Rémunération</label>
-                                                      <input type="Text" class="form-control" id="Rémunération"
-                                                            name="Rémunération" placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label for="FormInput" class="form-label Offre">Nom
-                                                            Entreprise</label>
-                                                      <select name="entreprise" id="SelectEntreprise"
-                                                            class="form-select" aria-label="Default select example">
-                                                            <?php
-                                                                  while ($tab = $entSel->fetch()) {
-                                                                        echo '<option selected>Entreprises</option>';
-                                                                        echo '<option value="' . $tab[0] . '">' . $tab[1] . ' ' . $tab[2] . '</option>';
-                                                                  }
-                                                                  ?>
-                                                      </select>
-                                                </div>
-                                          </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                          <div class="form-group">
-                                                <div class="mb-3">
-                                                      <label class="form-label Offre">Description</label>
-                                                      <input type="Text" class="form-control Description"
-                                                            id="description" name="description" placeholder="">
-                                                </div>
-                                          </div>
-                                    </div>
-                              </div>
-
-                        </div>
-                        <div class="modal-footer">
-                              <button type="button" class="btn btn-outline-danger"
-                                    data-bs-dismiss="modal">Annuler</button>
-                              <button type="submit" name="updateOffre" class="btn btn-primary">Sauvegarder</button>
-                        </div>
-                  </form>
-                  <?php  } ?>
-            </div>
-      </div>
-</div>
+<!-- MESSAGE DE REUSSITE CREATION (Bootstrap ALERT) -->
+<script>
+window.setTimeout(function() {
+      $(".alert").fadeTo(500, 0).slideUp(500, function() {
+            $(this).remove();
+      });
+}, 3000);
+</script>
