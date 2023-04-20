@@ -1,3 +1,25 @@
+<?php
+// Initialize the session
+session_start();
+
+// Check if the user is logged in, if not then redirect him to login page
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+      header("Location: ../../login.php");
+      exit;
+}
+
+require_once "../../config.php";
+if (isset($_GET['id'])) {
+      $sql = "SELECT e.nom, e.nombre_etudiant, v.ville, v.région, v.code_postal, se.secteur
+                        FROM entreprise e
+                        INNER JOIN site s ON s.id_entreprise = e.id_entreprise 
+                        INNER JOIN ville v ON v.id_ville = s.id_ville 
+                        INNER JOIN avoir a ON a.id_entreprise = e.id_entreprise 
+                        INNER JOIN secteur_activité se ON se.id_secteur = a.id_secteur 
+                        Where e.id_entreprise = " . $_GET['id'];
+}
+
+?>
 <!DOCTYPE HTML>
 <html>
 
@@ -21,35 +43,96 @@
 </head>
 
 <body>
-      <div class="container">
-            <h1 class="mt-5 mb-5">EVALUATION</h1>
-            <div class="card">
-                  <div class="card-header">Entreprise</div>
-                  <div class="card-body">
-                        <div class="row">
-                              <div class="col-sm-4 text-center">
-                                    <h1 class="text-warning mt-4 mb-4">
-                                          <b><span id="average_rating">0.0</span> / 5</b>
-                                    </h1>
-                                    <div class="mb-3">
-                                          <i class="fas fa-star star-light mr-1 main_star"></i>
-                                          <i class="fas fa-star star-light mr-1 main_star"></i>
-                                          <i class="fas fa-star star-light mr-1 main_star"></i>
-                                          <i class="fas fa-star star-light mr-1 main_star"></i>
-                                          <i class="fas fa-star star-light mr-1 main_star"></i>
+      <div class="container mt-5">
+            <div class="container">
+                  <div class="container-fluid">
+                        <?php
+
+                        if ($result = $pdo->query($sql)) {
+                              if ($result->rowCount() > 0) {
+                                    while ($row = $result->fetch()) {
+                        ?>
+
+                        <div class="card text-center">
+                              <div class="card-header">
+                                    <h1>EVALUATION de l'entreprise <?php echo htmlspecialchars($row['nom']); ?></h1>
+                              </div>
+                              <div class="card-body">
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Nom</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $row['nom'] ?>"
+                                                      disabled>
+                                          </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Nombre
+                                                etudiants</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text"
+                                                      value="<?= $row['nombre_etudiant'] ?>" disabled>
+                                          </div>
+
+                                    </div>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Région</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $row['région'] ?>"
+                                                      disabled>
+                                          </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Ville</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $row['ville'] ?>"
+                                                      disabled>
+                                          </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Secteur d'activité</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $row['secteur'] ?>"
+                                                      disabled>
+                                          </div>
+                                    </div>
+                                    <div class="card-footer text-muted  mt-5">
+                                          <div class="row">
+                                                <div class="col-sm-4 text-center">
+                                                      <h1 class="text-warning mt-4 mb-4">
+                                                            <b><span id="average_rating">0.0</span> / 5</b>
+                                                      </h1>
+                                                      <div class="mb-3">
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                      </div>
+                                                </div>
+
+                                                <div class="col-sm-4 text-center">
+                                                      <h3 class="mt-4 mb-3">Evaluer ici</h3>
+                                                      <button type="button" name="add_review" id="add_review"
+                                                            class="btn btn-primary">Cliquez</button>
+                                                      <a href="listEntreprise.php" class="btn btn-primary">Retourner</a>
+                                                </div>
+                                          </div>
                                     </div>
                               </div>
-
-                              <div class="col-sm-4 text-center">
-                                    <h3 class="mt-4 mb-3">Evaluer ici</h3>
-                                    <button type="button" name="add_review" id="add_review"
-                                          class="btn btn-primary">Cliquez</button>
-                                    <a href="listEntreprise.php" id="add_review" class="btn btn-primary">Retourner</a>
-                              </div>
                         </div>
+
+                        <?php }
+                              } else {
+                                    echo 'Erreur de données, Veuillez contacter un administrateur';
+                                    echo '<div class="card-footer text-muted"><a href="listEntreprise.php" class="btn btn-info">
+                                          <i class=" fa fa-arrow-left">
+                                          </i>Retourner</a></div>';
+                              }
+                        } // Free result set
+                        unset($result);
+                        ?>
                   </div>
             </div>
-            <div class="mt-5" id="review_content"></div>
       </div>
 </body>
 
@@ -71,13 +154,15 @@
                               <i class="fas fa-star star-light submit_star mr-1" id="submit_star_4" data-rating="4"></i>
                               <i class="fas fa-star star-light submit_star mr-1" id="submit_star_5" data-rating="5"></i>
                         </h4>
+                        <label for="note">Commentaire</label>
                         <div class="form-group">
-                              <input type="text" name="note" id="note" class="form-control" placeholder="" />
+                              <textarea name="user_review" id="user_review" class="form-control"></textarea>
                         </div>
                         <div class="form-group">
-                              <textarea name="commentaire" id="commentaire" class="form-control"
-                                    placeholder=""></textarea>
+                              <input name="id_entreprise" id="id_entreprise" class="form-control"
+                                    value="<?= $_GET['id'] ?>" />
                         </div>
+
                         <div class="form-group text-center mt-4">
                               <button type="button" class="btn btn-primary" id="save_review">Soumettre</button>
                         </div>
@@ -90,81 +175,59 @@
 var rating_data = 0;
 
 $('#add_review').click(function() {
-
       $('#review_modal').modal('show');
-
 });
 
 $(document).on('mouseenter', '.submit_star', function() {
-
       var rating = $(this).data('rating');
-
       reset_background();
-
       for (var count = 1; count <= rating; count++) {
-
             $('#submit_star_' + count).addClass('text-warning');
-
       }
-
 });
 
 function reset_background() {
       for (var count = 1; count <= 5; count++) {
-
             $('#submit_star_' + count).addClass('star-light');
-
             $('#submit_star_' + count).removeClass('text-warning');
-
       }
 }
 
 $(document).on('mouseleave', '.submit_star', function() {
-
       reset_background();
-
       for (var count = 1; count <= rating_data; count++) {
-
             $('#submit_star_' + count).removeClass('star-light');
-
             $('#submit_star_' + count).addClass('text-warning');
       }
-
 });
 
 $(document).on('click', '.submit_star', function() {
-
       rating_data = $(this).data('rating');
-
 });
 
 $('#save_review').click(function() {
-
-      var user_name = $('#user_name').val();
-
+      var id_entreprise = $('#id_entreprise').val();
       var user_review = $('#user_review').val();
-
-      if (user_name == '' || user_review == '') {
-            alert("Please Fill Both Field");
+      if (user_review == '') {
+            alert("Remplir les deux champs");
             return false;
       } else {
             $.ajax({
+                  type: "POST",
                   url: "submit_rating.php",
-                  method: "POST",
                   data: {
                         rating_data: rating_data,
-                        user_name: user_name,
-                        user_review: user_review
+                        user_review: user_review,
+                        id_entreprise: id_entreprise
                   },
                   success: function(data) {
                         $('#review_modal').modal('hide');
-
-                        load_rating_data();
-
                         alert(data);
+                        setTimeout(function() {
+                              window.location = 'listEntreprise.php'
+                        }, 2000);
                   }
             })
       }
-
 });
 </script>

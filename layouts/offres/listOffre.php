@@ -154,9 +154,7 @@ require_once "../../config.php";
 
                                                 echo "<td>";
                                                 if ($_SESSION['id'] == 1 || $_SESSION['id'] == 3) {
-                                                      echo '<form action="postpostuler.php" method="post">
-                                                      <button type="submit" name="id_offre" value="' . $row['id_offre'] . '" class="btn btn-outline-primary btn-sm mb-3">POSTULER</button>
-                                                </form>';
+                                                echo '<a href="postuleForm.php?id=' . $row['id_offre'] . '" class="btn btn-outline-primary btn-sm mb-3">POSTULER</a>';
                                                       echo '<form action="wishlist.php" method="post">
                                                                   <button type="submit" name="id_offre" value="' . $row['id_offre'] . '" class="btn btn-outline-primary btn-sm">WHISHLIST</button>
                                                             </form>';
@@ -295,12 +293,7 @@ require_once "../../config.php";
                   <?php
                   $pdo = new PDO("mysql:host=localhost;dbname=projetWeb", "root", "");
                   $req = "SELECT * from entreprise";
-                  $entSel = $pdo->query($req);
-
-                  $req = "SELECT * from ville";
-                  $villeSel = $pdo->query($req);
-
-                  if ($entSel && $villeSel) {
+                  $entSelect = $pdo->query($req);
 
                   ?>
                   <form action="updateOffre.php" method="post">
@@ -319,15 +312,24 @@ require_once "../../config.php";
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
-                                                      <label for="FormInput" class="form-label Offre">Nom
-                                                            Entreprise</label>
-                                                      <select name="entreprise" id="SelectEntreprise"
-                                                            class="form-select" aria-label="Default select example">
+                                                      <label for="FormInput" class="form-label Offre">Entreprise</label>
+                                                      <select name="entreprise" id="entreprise" class="form-select"
+                                                            aria-label="Default select example" required>
                                                             <?php
-                                                                  while ($tab = $entSel->fetch()) {
-                                                                        echo '<option value="' . $tab[0] . '">' . $tab[1] . ' ' . $tab[2] . '</option>';
+                                                            // foreach ($noms as $nom) {
+                                                            // echo "<option value='{$nom['id_entreprise']}'>{$nom['nom']}</option>";
+                                                            //}
+                                                            ?>
+                                                            <option value="">Sélectionner l'entreprise</option>
+                                                            <?php
+                                                            if ($entSelect->rowCount() > 0) {
+                                                                  while ($row = $entSelect->fetch()) {
+                                                                        echo '<option value="' . $row['id_entreprise'] . '">' . $row['nom'] . '</option>';
                                                                   }
-                                                                  ?>
+                                                            } else {
+                                                                  echo '<option value="">Données Entrepise non disponibles</option>';
+                                                            }
+                                                            ?>
                                                       </select>
                                                 </div>
                                           </div>
@@ -356,10 +358,10 @@ require_once "../../config.php";
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
-                                                      <label class="form-label Offre">Date de
+                                                      <label for="FormInput" class="form-label Offre">Date de
                                                             l'Offre</label>
-                                                      <input type="date" class="form-control" id="Date_post"
-                                                            name="Date_post">
+                                                      <input type="date" class="form-control" id="date" name="Date_post"
+                                                            placeholder="" required>
                                                 </div>
                                           </div>
                                     </div>
@@ -385,17 +387,14 @@ require_once "../../config.php";
                                           </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                          <label for="FormInput" class="form-label Offre">Site</label>
-                                          <div class="row">
+                                    <div class="col-md-12">
+                                          <div class="form-group">
                                                 <div class="mb-3">
-                                                      <select name="ville" id="SelectVille" class="form-select"
-                                                            aria-label="Default select example">
-                                                            <?php
-                                                                        while ($tab = $villeSel->fetch()) {
-                                                                              echo '<option value="' . $tab[0] . '">' . $tab[1] . ' ' . $tab[2] . '</option>';
-                                                                        }
-                                                                        ?>
+                                                      <label for="FormInput" class="form-label Offre">Site</label>
+                                                      <select name="site" id="site" class="form-select"
+                                                            aria-label="Default select example" required>
+                                                            <option value="">Sélectionner en premier l'entreprise
+                                                            </option>
                                                       </select>
                                                 </div>
                                           </div>
@@ -409,7 +408,52 @@ require_once "../../config.php";
                               <button type="submit" name="updateOffre" class="btn btn-primary">Sauvegarder</button>
                         </div>
                   </form>
-                  <?php  } ?>
             </div>
       </div>
 </div>
+
+<!-- 
+            SCRIPT JS POUR LE CONTROLE DU SELECT DE L'ENTREPRISE ET DU SITE 
+            ON RECUPERE L'ID DE L'ENTREPRISE ET ON FILTRE LE SELECT BOX DU SITE EN FONCTION 
+            LE FICHIER CREATEOFFAJAX.PHP PERMET DE RETOURNER LA LISTE DES SITES 
+      -->
+<script>
+$(document).ready(function() {
+      $('#entreprise').on('change', function() {
+            var id_entreprise = $(this).val();
+            if (id_entreprise) {
+                  $.ajax({
+                        type: 'POST',
+                        url: 'createOffAjax.php',
+                        data: 'id_entreprise=' + id_entreprise,
+                        success: function(html) {
+                              $('#site').html(html);
+                        }
+                  });
+            } else {
+                  $('#site').html(
+                        '<option value="">Selectionner en premier entreprise</option>'
+                  );
+            }
+      });
+});
+</script>
+
+<!-- 
+            SCRIPT JS POUR LE CONTROLE DE LA DATE
+            LA VALEUR MIN EST DEFINIE SUR 3 JOURS A PARTIR DE LA DATE COURANTE
+            LA VALEUR MAX EST DEFINIE SUR 2 JOURS A PARTIR DE LA DATE COURANTE
+      -->
+<script>
+$(document).ready(function() {
+      var minDate = new Date();
+      minDate.setDate(minDate.getDate() - 10);
+      minDate = minDate.toISOString().split('T')[0];
+      document.getElementById('date').setAttribute('min', minDate);
+
+      var maxDate = new Date();
+      maxDate.setDate(maxDate.getDate() + 2);
+      maxDate = maxDate.toISOString().split('T')[0];
+      document.getElementById('date').setAttribute('max', maxDate);
+});
+</script>

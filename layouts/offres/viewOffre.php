@@ -8,6 +8,14 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       exit;
 }
 
+require_once "../../config.php";
+
+if (isset($_GET['id'])) {
+      $sql = "SELECT id_offre, o.Titre, o.Durée, o.Durée, o.nombre_places,o.Remuneration,o.Date_post,o.descrip, v.ville
+            FROM offre o
+            INNER JOIN site s ON s.id_site = o.id_site 
+            INNER JOIN ville v ON v.id_ville = s.id_ville WHERE o.id_offre= " . $_GET['id'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -75,13 +83,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       <div class="container">
             <div class="container-fluid">
                   <?php
-                  require_once "../../config.php";
-                  if (isset($_GET['id'])) {
-                        $sql = "SELECT o.Titre, o.Durée, o.Durée, o.nombre_places,o.Remuneration,o.Date_post,o.descrip, v.ville
-                              FROM offre o
-                              INNER JOIN site s ON s.id_site = o.id_site 
-                              INNER JOIN ville v ON v.id_ville = s.id_ville WHERE o.id_offre= " . $_GET['id'];
-                  }
                   if ($result = $pdo->query($sql)) {
                         if ($result->rowCount() > 0) {
                               while ($row = $result->fetch()) {
@@ -145,7 +146,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                                     <div class="d-grid gap-2 col-3 mx-auto">
                                           <?php
                                                             if ($_SESSION['id'] == 1 || $_SESSION['id'] == 3) {
-                                                                  echo '<a href="listOffre.php" class="btn btn-primary">Postuler</a>';
+                                                                  echo '<a href="postuleForm.php?id=' . $row['id_offre'] . '" class="btn btn-outline-primary btn-sm mb-3">POSTULER</a>';
                                                             } ?>
 
                                           <a href="listOffre.php" class=" btn btn-outline-info">
