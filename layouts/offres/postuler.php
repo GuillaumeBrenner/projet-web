@@ -28,6 +28,12 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       // Récupération de l'id de l'offre 
       $id_offre = $_POST['id_offre'];
 
+
+      // Récupération des données du formulaire
+      $nom = $_POST['nom'];
+      $prenom = $_POST['prenom'];
+      $mail = $_POST['mail'];
+
       // Récupération des informations du fichier CV soumis
       $cvFile = $_FILES['cv'];
       $cvFileName = $cvFile['name'];
@@ -98,16 +104,24 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       $cv_name = BASE_URL . $cvDestination;
       $ldm_name = BASE_URL . $lettreDestination;
 
-      $sql = "INSERT INTO postule (id_c, id_offre, cv_name, ldm_name) VALUES (:id_c, :id_offre, :cv_name, :ldm_name)";
+      $sql = "INSERT INTO postule (id_c, id_offre, nom, prenom, mail, cv_name, ldm_name) VALUES (:id_c, :id_offre, :nom, :prenom, :mail, :cv_name, :ldm_name)";
       $stmt = $pdo->prepare($sql);
       $stmt->bindParam(':id_c', $id_c);
       $stmt->bindParam(':id_offre', $id_offre);
+      $stmt->bindParam(':nom', $nom);
+      $stmt->bindParam(':prenom', $prenom);
+      $stmt->bindParam(':mail', $mail, PDO::PARAM_STR);
       $stmt->bindParam(':cv_name', $cv_name);
       $stmt->bindParam(':ldm_name', $ldm_name);
 
-      if ($stmt->execute()) {
+      try {
+            $stmt->execute();
             // Message de réussite
             $_SESSION['status'] = "Les fichiers ont été téléchargé avec succès.";
+            header("Location: listOffre.php");
+            exit();
+      } catch (PDOException) {
+            $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement des fichiers, Veuillez réessayer";
             header("Location: listOffre.php");
             exit();
       }

@@ -47,6 +47,36 @@ if (isset($_GET['id'])) {
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
+                                                      <label class="form-label Offre">Nom</label>
+                                                      <input type="Text" class="form-control" id="nom" name="nom"
+                                                            required>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label Offre">Prénom</label>
+                                                      <input type="Text" class="form-control" id="prenom" name="prenom"
+                                                            required>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label Offre">Email</label>
+                                                      <input type="email" class="form-control" id="mail" name="mail"
+                                                            required>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
                                                       <label for="file" class="form-label">CV</label>
                                                       <input type="file" id="cv" name="cv" class="form-control"
                                                             required>

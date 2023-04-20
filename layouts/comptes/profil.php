@@ -257,8 +257,8 @@ require_once "../../config.php";
                         </div>
                         <div class="card-body">
                               <?php
-                                    // Attempt select query execution
-                                    $sql = 'SELECT p.id_offre, o.Titre, o.Date_post, o.Remuneration, o.nombre_places
+                              // Attempt select query execution
+                              $sql = 'SELECT p.id_offre, o.Titre, o.Date_post, o.Remuneration, o.nombre_places
                               FROM postule p 
                               INNER JOIN compte c ON c.id_c = p.id_c
                               INNER JOIN offre o ON o.id_offre = p.id_offre
