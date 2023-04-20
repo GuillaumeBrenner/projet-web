@@ -48,7 +48,8 @@ if (isset($_GET['id'])) {
                                           <div class="form-group">
                                                 <div class="mb-3">
                                                       <label for="file" class="form-label">CV</label>
-                                                      <input type="file" id="cv" name="cv" class="form-control">
+                                                      <input type="file" id="cv" name="cv" class="form-control"
+                                                            required>
                                                 </div>
                                           </div>
                                     </div>
@@ -57,7 +58,8 @@ if (isset($_GET['id'])) {
                                           <div class="form-group">
                                                 <div class="mb-3">
                                                       <label for="file" class="form-label">Lettre de motivation</label>
-                                                      <input type="file" id="ldm" name="ldm" class="form-control">
+                                                      <input type="file" id="ldm" name="ldm" class="form-control"
+                                                            required>
                                                 </div>
                                           </div>
                                     </div>

@@ -49,54 +49,66 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       $cvFileExtension = strtolower(pathinfo($cvFileName, PATHINFO_EXTENSION));
       $lettreFileExtension = strtolower(pathinfo($lettreFileName, PATHINFO_EXTENSION));
 
-      if (!in_array($cvFileExtension, $allowedExtensions) || !in_array($lettreFileExtension, $allowedExtensions)) {
-            $_SESSION['supp'] = "Les fichiers doivent être au format : PDF, JPG, JPEG, PNG.";
-            header("Location: listOffre.php");
-            exit();
-      }
+      // Vérification du type de fichier et de la taille pour le CV
+      $maxFileSize = 10485760;
 
-      // Vérification de la taille des fichiers;
-      $maxSize = 10485760; // 10485760 Octets = 10 Mo
-      if ($cvFileSize > $maxSize || $lettreFileSize > $maxSize) {
-            $_SESSION['supp'] = "la taille du fichier est trop grande (Télécharger un fichier de moins de 10Mo).";
-            header("Location: listOffre.php");
-            exit();
-      }
-
-      // Déplacement du fichier vers le dossier de stockage 
-      $cvNewFileName = 'CV - ' .  $_SESSION["username"] . ' - ' . uniqid() . '.' . $cvFileExtension;
-      $cvDestination = CV_DIR . $cvNewFileName;
-
-      $lettreNewFileName = 'LETTRE - ' . $_SESSION["username"] . ' - ' . uniqid() . '.' . $lettreFileExtension;
-      $lettreDestination = LDM_DIR . $lettreNewFileName;
-
-      if (move_uploaded_file($cvFileTmpName, $cvDestination) && move_uploaded_file($lettreFileTmpName, $lettreDestination)) {
-            // Insertion du chemin du fichier dans la base de données
-            $cv_name = BASE_URL . $cvDestination;
-            $ldm_name = BASE_URL . $lettreDestination;
-
-            $sql = "INSERT INTO postule (id_c, id_offre, cv_name, ldm_name) VALUES (:id_c, :id_offre, :cv_name, :ldm_name)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':id_c', $id_c);
-            $stmt->bindParam(':id_offre', $id_offre);
-            $stmt->bindParam(':cv_name', $cv_name);
-            $stmt->bindParam(':ldm_name', $ldm_name);
-
-            if ($stmt->execute()) {
-                  // Message de réussite
-                  $_SESSION['status'] = "Les fichiers ont été téléchargé avec succès.";
+      if (in_array($cvFileExtension, $allowedExtensions) && $cvFileSize <= $maxFileSize) {
+            // Déplacement du fichier vers le dossier de stockage 
+            $cvNewFileName = 'CV - ' .  $_SESSION["username"] . ' - ' . uniqid() . '.' . $cvFileExtension;
+            $cvDestination = CV_DIR . $cvNewFileName;
+            move_uploaded_file($cvFileTmpName, $cvDestination);
+      } else {
+            if (!in_array($cvFileExtension, $allowedExtensions)) {
+                  $_SESSION['supp'] = "Le fichier du CV doit être au format : PDF, JPG, JPEG, PNG. ";
+                  header("Location: listOffre.php");
+                  exit();
+            } elseif ($cvFileSize > $maxFileSize) {
+                  $_SESSION['supp'] = "La taille du fichier du CV est trop grande (ne doit pas dépasser 10Mo). ";
                   header("Location: listOffre.php");
                   exit();
             }
-      }
-      // Message si ça existe déja
-      else {
-            $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement des fichiers, Veuillez réessayer.";
+            $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement des fichiers, Veuillez réessayer.(CV)";
             header("Location: listOffre.php");
             exit();
       }
-} else {
-      $_SESSION['supp'] = "Vous n'avez télécharger aucun fichier, Veuillez réessayer";
-      header("Location: listOffre.php");
-      exit();
+
+      // Vérification du type de fichier et de la taille pour la LDM
+      if (in_array($lettreFileExtension, $allowedExtensions) && $lettreFileSize <= $maxFileSize) {
+            // Déplacement du fichier vers le dossier de stockage 
+            $lettreNewFileName = 'LETTRE - ' . $_SESSION["username"] . ' - ' . uniqid() . '.' . $lettreFileExtension;
+            $lettreDestination = LDM_DIR . $lettreNewFileName;
+            move_uploaded_file($lettreFileTmpName, $lettreDestination);
+      } else {
+            if (!in_array($lettreFileExtension, $allowedExtensions)) {
+                  $_SESSION['supp'] = "Le fichier de la lettre doit être au format : PDF, JPG, JPEG, PNG.";
+                  header("Location: listOffre.php");
+                  exit();
+            }
+            if ($lettreFileSize > $maxFileSize) {
+                  $_SESSION['supp'] = "La taille du fichier de la Lettre est trop grande (ne doit pas dépasser 10Mo). ";
+                  header("Location: listOffre.php");
+                  exit();
+            }
+            $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement des fichiers, Veuillez réessayer.(Lettre)";
+            header("Location: listOffre.php");
+            exit();
+      }
+
+      // Insertion du chemin du fichier dans la base de données
+      $cv_name = BASE_URL . $cvDestination;
+      $ldm_name = BASE_URL . $lettreDestination;
+
+      $sql = "INSERT INTO postule (id_c, id_offre, cv_name, ldm_name) VALUES (:id_c, :id_offre, :cv_name, :ldm_name)";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(':id_c', $id_c);
+      $stmt->bindParam(':id_offre', $id_offre);
+      $stmt->bindParam(':cv_name', $cv_name);
+      $stmt->bindParam(':ldm_name', $ldm_name);
+
+      if ($stmt->execute()) {
+            // Message de réussite
+            $_SESSION['status'] = "Les fichiers ont été téléchargé avec succès.";
+            header("Location: listOffre.php");
+            exit();
+      }
 }
