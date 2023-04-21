@@ -11,8 +11,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 require_once "../../config.php";
 
 $req = "SELECT * from secteur_activité";
-$sectSel = $pdo->query($req);
-$secteurs = $sectSel->fetchAll(PDO::FETCH_ASSOC);
+$sectSel = $pdo->prepare($req);
+$sectSel->execute();
 
 $req = "SELECT * from ville";
 $villeSel = $pdo->query($req);
@@ -29,7 +29,18 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
       <title>CréationEntreprise</title>
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css">
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css">
-      <link rel="stylesheet" href="FormsCSS.css">
+
+      <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+      <style>
+      .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+            width: 100%;
+      }
+      </style>
 
 </head>
 
@@ -51,11 +62,10 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                           <div class="col-md-6">
                                                 <div class="form-group">
                                                       <div class="mb-3">
-                                                            <label for="FormInput" class="form-label Offre">Nom de
+                                                            <label for="FormInput" class="form-label">Nom de
                                                                   l'entreprise</label>
                                                             <input type="Text" class="form-control"
-                                                                  id="exampleFormControlInput1" name="Nom_entreprise"
-                                                                  placeholder="" require>
+                                                                  id="exampleFormControlInput1" name="nom" required>
                                                       </div>
                                                 </div>
                                           </div>
@@ -63,53 +73,60 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                           <div class="col-md-6">
                                                 <div class="form-group">
                                                       <div class="mb-3">
-                                                            <label for="FormInput" class="form-label Offre">Nombre
+                                                            <label for="FormInput" class="form-label">Nombre
                                                                   d'etudiants CESI</label>
                                                             <input type="Text" class="form-control"
-                                                                  id="exampleFormControlInput1" name="Nombre_etudiants"
-                                                                  placeholder="" require>
+                                                                  id="exampleFormControlInput1" name="nbr" required>
                                                       </div>
                                                 </div>
                                           </div>
 
-
-                                          <div class="mb-3 Ent">
-                                                <img src="\upload\profile_pics\default.png" class="profile_img"
-                                                      id="profile_img" alt="Responsive image"> </img>
-                                                <input class="form-control form-control-sm inpt" id="image_file"
-                                                      type="file" accept="image/*" name="profile_img" />
-                                          </div>
-
-                                          <div class="mb-3">
-                                                <label for="FormInput" class="form-label Offre">Localité</label>
-                                                <div class="mb-3 row">
-                                                      <select name="ville[]" class="selectpicker" multiple
-                                                            aria-label="Default select example" data-live-search="true">
-                                                            <?php
-                                                            foreach ($villes as $ville) {
-                                                                  echo "<option value='{$ville['ville']}'>{$ville['ville']}</option>";
-                                                            }
-                                                      ?>
-                                                      </select>
+                                          <div class="col-md-12">
+                                                <label for="FormInput" class="form-label">Localité</label>
+                                                <div class="form-group">
+                                                      <div class="mb-3">
+                                                            <select name="villes[]" class="selectpicker" multiple
+                                                                  data-live-search="true">
+                                                                  <?php
+                                                                  foreach ($villes as $ville) {
+                                                                        echo "<option value='{$ville['id_ville']}'>{$ville['ville']}</option>";
+                                                                  }
+                                                                  ?>
+                                                            </select>
+                                                      </div>
                                                 </div>
                                           </div>
 
-
-
-                                          <div class="mb-3">
-                                                <label for="FormInput" class="form-label" id="secAc">Secteur
-                                                      d'activité</label>
-                                                <div class="mb-3 row">
-                                                      <select name="ville[]" class="selectpicker" multiple
-                                                            aria-label="Default select example" data-live-search="true">
-                                                            <?php
-                                                            foreach ($secteurs as $secteur) {
-                                                                  echo "<option value='{$secteur['secteur']}'>{$secteur['secteur']}</option>";
-                                                            }
-                                                      ?>
-                                                      </select>
+                                          <div class="col-md-12">
+                                                <div class="form-group">
+                                                      <label for="FormInput" class="form-label">Secteur
+                                                            d'activité</label>
+                                                      <div class="mb-3">
+                                                            <select name="secteurs[]" class="selectpicker" multiple
+                                                                  data-live-search="true">
+                                                                  <?php
+                                                                  while ($row = $sectSel->fetch(PDO::FETCH_ASSOC)) {
+                                                                        $id_secteur = $row['id_secteur'];
+                                                                        $secteur = $row['secteur'];
+                                                                        echo "<option value=\"$id_secteur\">$secteur</option>";
+                                                                    }
+                                                                  ?>
+                                                            </select>
+                                                      </div>
                                                 </div>
                                           </div>
+
+                                          <div class="col-md-6 mb-3">
+                                                <div class="form-group">
+                                                      <label for="file" class="form-label">Logo</label>
+                                                      <img src="..\comptes\upload\profile_pics\default.png"
+                                                            class="profile_img" id="profile_img" alt="Responsive image">
+                                                      </img>
+                                                      <input type="file" id="logo" name="logo" class="form-control"
+                                                            required>
+                                                </div>
+                                          </div>
+
                                     </div>
                                     <button type="submit" class="btn btn-primary">Soumettre</button>
                                     <a href="listEntreprise.php" class="btn btn-outline-danger">Annuler</a>
@@ -118,11 +135,14 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                   </div>
             </div>
       </div>
+      <!-- <script>
+            $(document).ready(function() {
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
-      </script>
+            $('select').selectpicker();
+
+            });
+            </script>
+      -->
 </body>
 
 </html>
