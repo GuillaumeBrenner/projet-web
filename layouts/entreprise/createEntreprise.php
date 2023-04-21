@@ -10,13 +10,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 // Include config file
 require_once "../../config.php";
 
-$req = "SELECT * from secteur_activité";
-$sectSel = $pdo->prepare($req);
-$sectSel->execute();
-
-$req = "SELECT * from ville";
-$villeSel = $pdo->query($req);
-$villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,8 +57,8 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                                       <div class="mb-3">
                                                             <label for="FormInput" class="form-label">Nom de
                                                                   l'entreprise</label>
-                                                            <input type="Text" class="form-control"
-                                                                  id="exampleFormControlInput1" name="nom" required>
+                                                            <input type="Text" class="form-control" id="nom" name="nom"
+                                                                  required>
                                                       </div>
                                                 </div>
                                           </div>
@@ -75,8 +68,8 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                                       <div class="mb-3">
                                                             <label for="FormInput" class="form-label">Nombre
                                                                   d'etudiants CESI</label>
-                                                            <input type="Text" class="form-control"
-                                                                  id="exampleFormControlInput1" name="nbr" required>
+                                                            <input type="Text" class="form-control" id="nbr" name="nbr"
+                                                                  required>
                                                       </div>
                                                 </div>
                                           </div>
@@ -88,8 +81,10 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                                             <select name="villes[]" class="selectpicker" multiple
                                                                   data-live-search="true">
                                                                   <?php
-                                                                  foreach ($villes as $ville) {
-                                                                        echo "<option value='{$ville['id_ville']}'>{$ville['ville']}</option>";
+                                                                  $sql = "SELECT * from ville";
+                                                                  $result = $pdo->query($sql);
+                                                                  foreach ($result as $ville) {
+                                                                        echo "<option value=" .$ville['id_ville'] . ">{$ville['ville']}</option>";
                                                                   }
                                                                   ?>
                                                             </select>
@@ -105,11 +100,11 @@ $villes = $villeSel->fetchAll(PDO::FETCH_ASSOC);
                                                             <select name="secteurs[]" class="selectpicker" multiple
                                                                   data-live-search="true">
                                                                   <?php
-                                                                  while ($row = $sectSel->fetch(PDO::FETCH_ASSOC)) {
-                                                                        $id_secteur = $row['id_secteur'];
-                                                                        $secteur = $row['secteur'];
-                                                                        echo "<option value=\"$id_secteur\">$secteur</option>";
-                                                                    }
+                                                                  $sql = "SELECT * from secteur_activité";
+                                                                  $result = $pdo->query($sql);
+                                                                  foreach ($result as $secteur) {
+                                                                        echo "<option value=" . $secteur['id_secteur'] . ">{$secteur['secteur']}</option>";
+                                                                  }
                                                                   ?>
                                                             </select>
                                                       </div>
