@@ -174,7 +174,7 @@ require_once "../../config.php";
       <script>
       $(document).ready(function() {
 
-            $('.deletebtn').on('click', function() {
+            $('#dataList').on('click', '.deletebtn', function() {
 
                   $('#deletemodal').modal('show');
 
@@ -198,7 +198,7 @@ require_once "../../config.php";
             <div class="modal-dialog" role="document">
                   <div class="modal-content">
                         <div class="modal-header">
-                              <h1 class="modal-title fs-5" id="exampleModalLabel">Suppression
+                              <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation de suppression
                               </h1>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -224,7 +224,7 @@ require_once "../../config.php";
       <script>
       $(document).ready(function() {
 
-            $('.editbtn').on('click', function() {
+            $('#dataList').on('click', '.editbtn', function() {
 
                   $('#editEnt').modal('show');
 
@@ -236,7 +236,7 @@ require_once "../../config.php";
 
                   console.log(data);
 
-                  $('#id_entreprise').val(data[0]);
+                  $('#Update_id_ent').val(data[0]);
                   $('#nom').val(data[1]);
                   $('#nbr').val(data[2]);
             });
@@ -266,7 +266,7 @@ require_once "../../config.php";
                   </div>
                   <form action="updateEnt.php" method="post">
                         <div class="modal-body">
-                              <input type="hidden" name="id_entreprise" id="id_entreprise">
+                              <input type="hidden" name="id_entreprise" id="Update_id_ent">
                               <div class="mb-3">
                                     <div class="form-group">
                                           <label class="form-label">Nom de

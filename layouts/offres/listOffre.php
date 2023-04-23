@@ -195,7 +195,7 @@ require_once "../../config.php";
       <script>
       $(document).ready(function() {
 
-            $('.deletebtn').on('click', function() {
+            $('#dataList').on('click', '.deletebtn', function() {
 
                   $('#deletemodal').modal('show');
 
@@ -244,7 +244,7 @@ require_once "../../config.php";
       <script>
       $(document).ready(function() {
 
-            $('.editbtn').on('click', function() {
+            $('#dataList').on('click', '.editbtn', function() {
 
                   $('#editOffre').modal('show');
 
@@ -256,7 +256,7 @@ require_once "../../config.php";
 
                   console.log(data);
 
-                  $('#id_offre').val(data[0]);
+                  $('#Update_id_offre').val(data[0]);
                   $('#Titre').val(data[1]);
                   $('#descrip').val(data[2]);
                   $('#Durée').val(data[3]);
@@ -299,7 +299,7 @@ require_once "../../config.php";
                   <form action="updateOffre.php" method="post">
                         <div class="modal-body">
                               <div class="row">
-                                    <input type="hidden" name="id_offre" id="id_offre">
+                                    <input type="hidden" name="id_offre" id="Update_id_offre">
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
