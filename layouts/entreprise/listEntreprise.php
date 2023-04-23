@@ -177,6 +177,7 @@ require_once "../../config.php";
       <script src="./assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
       <!-- SCRIPT js POUR LA SUPPRESSION -->
+      <!--  script JavaScript pour initialiser DataTables et le modal de confirmation -->
       <script>
       $(document).ready(function() {
 
@@ -189,6 +190,8 @@ require_once "../../config.php";
                   var data = $tr.children("td").map(function() {
                         return $(this).text();
                   }).get();
+
+                  console.log(data);
 
                   $('#id_ent').val(data[0]);
 
@@ -240,8 +243,8 @@ require_once "../../config.php";
                   console.log(data);
 
                   $('#id_entreprise').val(data[0]);
-                  $('#nomEnt').val(data[1]);
-                  $('#nbreEtu').val(data[2]);
+                  $('#nom').val(data[1]);
+                  $('#nbr').val(data[2]);
             });
       });
       </script>
@@ -274,15 +277,7 @@ require_once "../../config.php";
                                     <div class="form-group">
                                           <label class="form-label">Nom de
                                                 l'entreprise</label>
-                                          <input type="text" class="form-control" id="nomEnt" placeholder=""
-                                                name="nomEnt">
-                                    </div>
-                              </div>
-
-                              <div class="mb-3 Ent">
-                                    <div class="form-group">
-                                          <input class="form-control form-control-sm inpt" id="logoEnt" type="file"
-                                                accept="image/*" />
+                                          <input type="text" class="form-control" id="nom" name="nom">
                                     </div>
                               </div>
 
@@ -316,8 +311,7 @@ require_once "../../config.php";
                                     <div class="form-group">
                                           <label class="form-label Cent">Nombre d'etudiants
                                                 CESI</label>
-                                          <input type="text" class="form-control" id="nbreEtu" placeholder=""
-                                                name="nbreEtu">
+                                          <input type="text" class="form-control" id="nbr" name="nbr">
                                     </div>
                               </div>
 
@@ -325,7 +319,7 @@ require_once "../../config.php";
                         <div class="modal-footer">
                               <button type="button" class="btn btn-outline-danger"
                                     data-bs-dismiss="modal">Annuler</button>
-                              <button type="submit" name="updateEnt" class="btn btn-primary">Sauvegarder</button>
+                              <button type="submit" name="updateSubmit" class="btn btn-primary">Sauvegarder</button>
                         </div>
                   </form>
             </div>

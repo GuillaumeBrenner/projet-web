@@ -34,9 +34,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
                   <div class="container-fluid">
                         <!-- Toggle button -->
-                        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
-                              data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                              aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                               <i class="fas fa-bars"></i>
                         </button>
 
@@ -55,8 +53,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         </div>
 
                         <div class="dropdown">
-                              <button class="btn btn-outline-info dropdown-toggle" type="button"
-                                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                              <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <?php echo htmlspecialchars($_SESSION["username"]); ?>
                               </button>
                               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -77,87 +74,80 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                   <?php
                   require_once "../../config.php";
                   if (isset($_GET['id'])) {
-                        $sql = "SELECT e.nom, e.nombre_etudiant, v.ville, v.région, v.code_postal, se.secteur
-                                    FROM entreprise e
-                                    INNER JOIN site s ON s.id_entreprise = e.id_entreprise 
-                                    INNER JOIN ville v ON v.id_ville = s.id_ville 
-                                    INNER JOIN avoir a ON a.id_entreprise = e.id_entreprise 
-                                    INNER JOIN secteur_activité se ON se.id_secteur = a.id_secteur 
-                                    Where e.id_entreprise = " . $_GET['id'];
+                        $sql = 'SELECT entreprise.id_entreprise, entreprise.nom, entreprise.nombre_etudiant,
+                        ville.région, ville.ville, ville.code_postal,
+                        secteur_activité.secteur,
+                        GROUP_CONCAT(DISTINCT ville.ville SEPARATOR ", ") AS ville, 
+                        GROUP_CONCAT(DISTINCT secteur_activité.secteur SEPARATOR ", ") AS secteur
+                        FROM entreprise INNER JOIN avoir ON entreprise.id_entreprise = avoir.id_entreprise 
+                        INNER JOIN secteur_activité ON avoir.id_secteur = secteur_activité.id_secteur 
+                        INNER JOIN site ON entreprise.id_entreprise = site.id_entreprise 
+                        INNER JOIN ville ON ville.id_ville = site.id_ville 
+                        WHERE entreprise.id_entreprise = "' . $_GET['id'] . '"
+                        GROUP BY entreprise.id_entreprise ';
                   }
-                  if ($result = $pdo->query($sql)) {
-                        if ($result->rowCount() > 0) {
-                              while ($row = $result->fetch()) {
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->execute();
+                  $entreprises = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                  foreach ($entreprises as $entreprise) {
+
                   ?>
 
-                  <div class="card text-center">
-                        <div class="card-header">
-                              <h1><?php echo htmlspecialchars($row['nom']); ?></h1>
-                        </div>
-                        <div class="card-body">
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Nom</label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['nom'] ?>" disabled>
-                                    </div>
+                        <div class="card text-center">
+                              <div class="card-header">
+                                    <h1><?php echo htmlspecialchars($entreprise['nom']); ?></h1>
                               </div>
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Nombre
-                                          etudiants Cesi</label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['nombre_etudiant'] ?>"
-                                                disabled>
+                              <div class="card-body">
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Nom</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['nom'] ?>" disabled>
+                                          </div>
                                     </div>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Nombre
+                                                etudiants Cesi</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['nombre_etudiant'] ?>" disabled>
+                                          </div>
 
-                              </div>
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Région</label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['région'] ?>"
-                                                disabled>
                                     </div>
-                              </div>
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Ville</label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['ville'] ?>" disabled>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Région</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['région'] ?>" disabled>
+                                          </div>
                                     </div>
-                              </div>
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Code
-                                          Postal
-                                    </label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['code_postal'] ?>"
-                                                disabled>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Ville</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['ville'] ?>" disabled>
+                                          </div>
                                     </div>
-                              </div>
-                              <div class="mb-3 row">
-                                    <label class="col-sm-2 col-form-label">Secteur d'activité</label>
-                                    <div class="col-sm-10">
-                                          <input class="form-control" type="text" value="<?= $row['secteur'] ?>"
-                                                disabled>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Code
+                                                Postal
+                                          </label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['code_postal'] ?>" disabled>
+                                          </div>
                                     </div>
-                              </div>
-                              <div class="card-footer text-muted">
-                                    <div class="d-grid gap-2 col-3 mx-auto">
-                                          <a href="listEntreprise.php" class="btn btn-primary">Evaluer</a>
-                                          <a href="listEntreprise.php" class=" btn btn-outline-info"><i
-                                                      class=" fa fa-arrow-left"></i> Liste des entreprises</a>
+                                    <div class="mb-3 row">
+                                          <label class="col-sm-2 col-form-label">Secteur d'activité</label>
+                                          <div class="col-sm-10">
+                                                <input class="form-control" type="text" value="<?= $entreprise['secteur'] ?>" disabled>
+                                          </div>
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                          <div class="d-grid gap-2 col-3 mx-auto">
+                                                <a href="listEntreprise.php" class="btn btn-primary">Evaluer</a>
+                                                <a href="listEntreprise.php" class=" btn btn-outline-info"><i class=" fa fa-arrow-left"></i> Liste des entreprises</a>
+                                          </div>
                                     </div>
                               </div>
                         </div>
-                  </div>
-
-                  <?php }
-                        } else {
-                              echo 'Erreur de données, Veuillez contacter un administrateur';
-                              echo '<div class="card-footer text-muted"><a href="listEntreprise.php" class="btn btn-info">
-                                          <i class=" fa fa-arrow-left">
-                                          </i>Retourner</a></div>';
-                        }
-                  } // Free result set
-                  unset($result);
+                  <?php
+                  }
                   ?>
             </div>
       </div>

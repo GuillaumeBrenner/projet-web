@@ -31,6 +31,8 @@ $(document).ready(function() {
                         "sortAscending": ": activate to sort column ascending",
                         "sortDescending": ": activate to sort column descending"
                   }
+                  // LIEN POUR METTRE LE DATATABLE EN FRANCAIS SANS PERSONNALISER
+                  // "url": "https://cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
             }
 
       });
