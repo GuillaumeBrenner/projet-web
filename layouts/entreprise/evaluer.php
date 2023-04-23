@@ -60,7 +60,8 @@ require_once "../../config.php";
 
                         <div class="card text-center">
                               <div class="card-header">
-                                    <h1>EVALUATION de l'entreprise <?php echo htmlspecialchars($entreprise['nom']); ?>
+                                    <h1>Vous allez évaluer
+                                          l'entreprise : <?php echo htmlspecialchars($entreprise['nom']); ?>
                                     </h1>
                               </div>
                               <div class="card-body">
@@ -116,10 +117,10 @@ require_once "../../config.php";
                                                 </div>
 
                                                 <div class="col-sm-4 text-center">
-                                                      <h3 class="mt-4 mb-3">Evaluer ici</h3>
                                                       <button type="button" name="add_review" id="add_review"
-                                                            class="btn btn-primary">Cliquez</button>
-                                                      <a href="listEntreprise.php" class="btn btn-primary">Retourner</a>
+                                                            class="btn btn-primary mb-3">Evaluer ici</button>
+                                                      <a href="listEntreprise.php" class="btn btn-primary">Retourner à
+                                                            la liste des entreprises</a>
                                                 </div>
                                           </div>
                                     </div>
@@ -138,13 +139,13 @@ require_once "../../config.php";
 
 </html>
 
-<div id="review_modal" class="modal" tabindex="-1" role="dialog">
+<div class="modal fade" id="review_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog" role="document">
             <div class="modal-content">
                   <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h3>Quelle note donnez-vous ?</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                         <h4 class="text-center mt-2 mb-4">
@@ -156,10 +157,10 @@ require_once "../../config.php";
                         </h4>
                         <label for="note">Commentaire</label>
                         <div class="form-group">
-                              <textarea name="user_review" id="user_review" class="form-control"></textarea>
+                              <textarea name="user_review" id="user_review" class="form-control" required></textarea>
                         </div>
                         <div class="form-group">
-                              <input name="id_entreprise" id="id_entreprise" class="form-control"
+                              <input type="hidden" name="id_entreprise" id="id_entreprise" class="form-control"
                                     value="<?= $_GET['id'] ?>" />
                         </div>
 

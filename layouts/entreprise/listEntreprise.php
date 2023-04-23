@@ -75,6 +75,7 @@ require_once "../../config.php";
             </nav>
       </div>
 
+
       <div class="container">
             <div class="container-fluid">
                   <div class="row">
@@ -104,7 +105,6 @@ require_once "../../config.php";
                               <div class="mt-5 mb-3">
                                     <h2 class="pull-left">
                                           <?php
-
                                           if ($_SESSION['id'] == 1 || $_SESSION['id'] == 4) {
                                                 echo '<a href="createEntreprise.php" class="btn btn-primary"><i
                                                       class="fa fa-plus"></i>
@@ -113,57 +113,50 @@ require_once "../../config.php";
                                     </h2>
                               </div>
                         </div>
-                        <?php
-                        // Include config file
-                        require_once "../../config.php";
 
-                        // Attempt select query execution
-                        $sql = "SELECT * FROM entreprise WHERE validite = 1";
-                        if ($result = $pdo->query($sql)) {
-                              if ($result->rowCount() > 0) {
-                                    echo '<div class="col-md-12">';
-                                    echo '<table id="dataList" class="table table-bordered table-striped">';
-                                    echo "<thead>";
-                                    echo "<tr>";
-                                    echo "<th>#</th>";
-                                    echo "<th>Nom de l'entreprise</th>";
-                                    echo "<th>Nombre d'étudiants</th>";
-                                    echo "<th>Action</th>";
-                                    echo "<th></th>";
-                                    echo "</tr>";
-                                    echo "</thead>";
-                                    echo "<tbody>";
-                                    while ($row = $result->fetch()) {
-                                          echo "<tr>";
-                                          echo "<td>" . $row['id_entreprise'] . "</td>";
-                                          echo "<td>" . $row['nom'] . "</td>";
-                                          echo "<td>" . $row['nombre_etudiant'] . "</td>";
-                                          echo "<td>";
-                                          echo '<a href="viewEnt.php?id=' . $row['id_entreprise'] . '" title="Voir" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
-                                          if ($_SESSION['id'] == 1 || $_SESSION['id'] == 4) {
-                                                echo '<a href="#" class="ms-3 editbtn"><span class="fa fa-pencil"></span></a>';
-                                                echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
+                        <div class="col-md-12">
+                              <table id="dataList" class="table table-striped table-bordered">
+                                    <thead>
+                                          <tr>
+                                                <th>#</th>
+                                                <th>Nom de l'entreprise</th>
+                                                <th>Etudiants CESI</th>
+                                                <th>Actions</th>
+                                                <th></th>
+                                          </tr>
+                                    </thead>
+                                    <tbody>
+                                          <?php
+                                          require_once "../../config.php";
+                                          // Préparer et exécuter la requête pour récupérer les données de la base de données
+                                          $query = 'SELECT * FROM entreprise WHERE validite = 1';
+                                          $stmt = $pdo->prepare($query);
+                                          $stmt->execute();
+                                          $entreprises = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                          // Afficher les données dans le DataTable
+                                          foreach ($entreprises as $entreprise) {
+                                                echo '<tr>';
+                                                echo '<td>' . $entreprise['id_entreprise'] . '</td>';
+                                                echo '<td>' . $entreprise['nom'] . '</td>';
+                                                echo '<td>' . $entreprise['nombre_etudiant'] . '</td>';
+                                                echo "<td>";
+                                                echo '<a href="viewEnt.php?id=' . $entreprise['id_entreprise'] . '" title="Voir" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
+                                                if ($_SESSION['id'] == 1 || $_SESSION['id'] == 4) {
+                                                      echo '<a href="#" class="ms-3 editbtn"><span class="fa fa-pencil"></span></a>';
+                                                      echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
+                                                }
+                                                echo "</td>";
+                                                echo "<td>";
+                                                echo '<a href="evaluer.php?id=' . $entreprise['id_entreprise'] . '" class="btn btn-outline-primary btn-sm">EVALUER</a>';
+                                                echo "</td>";
+                                                echo '</tr>';
                                           }
-                                          echo "</td>";
-                                          echo "<td>";
-                                          echo '<a href="evaluer.php?id=' . $row['id_entreprise'] . '" class="btn btn-outline-primary btn-sm">EVALUER</a>';
-                                          echo "</td>";
-                                          echo "</tr>";
-                                    }
-                                    echo "</tbody>";
-                                    echo "</table>";
-                                    echo "</div>";
-                                    // Free result set
-                                    unset($result);
-                              } else {
-                                    echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
-                              }
-                        } else {
-                              echo "Oops! Réessayer plus tard.";
-                        }
-                        // Close connection
-                        unset($pdo);
-                        ?>
+                                          ?>
+                                    </tbody>
+                              </table>
+                        </div>
+
                   </div>
             </div>
       </div>
@@ -193,7 +186,7 @@ require_once "../../config.php";
 
                   console.log(data);
 
-                  $('#id_ent').val(data[0]);
+                  $('#id_entreprise').val(data[0]);
 
             });
       });
@@ -212,13 +205,14 @@ require_once "../../config.php";
                         </div>
                         <form action="deleteEntreprise.php" method="post">
                               <div class="modal-body">
-                                    <input type="hidden" name="id_ent" id="id_ent">
-                                    <h4>Voulez-vous vraiment supprimer cette entreprise?</h4>
+                                    <input type="hidden" name="id_entreprise" id="id_entreprise">
+                                    <h4>Êtes-vous sûr de vouloir supprimer cette entreprise ?</h4>
                               </div>
                               <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-secondary"
                                           data-bs-dismiss="modal">Annuler</button>
-                                    <button type="submit" name="deleteEntreprise" class="btn btn-danger"> Supprimer
+                                    <button type="submit" name="deleteEntreprise" class="btn btn-danger">
+                                          Supprimer
                                     </button>
                               </div>
                         </form>
