@@ -10,8 +10,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 // Définition des constantes pour le dossier de stockage des fichiers
 define('LOGO_DIR', 'uploads/');
-// Définition de la constante pour le dossier de base
-define('BASE_URL', 'http://localhost/projet-web/layouts/entreprise/uploads/');
 
 // Vérification de la soumission du formulaire
 // Connexion à la base de données MySQL avec PDO
@@ -63,7 +61,7 @@ if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
 }
 
 // Insertion du chemin du fichier dans la base de données
-$logo_name = BASE_URL . $Destination;
+$logo_name = $Destination;
 try {
     // Insertion de l'entreprise dans la table entreprises
     $sql = "INSERT INTO entreprise ( nom, logo, validite, nombre_etudiant  ) VALUES (:nom, :logo , :validite , :nbr  )";

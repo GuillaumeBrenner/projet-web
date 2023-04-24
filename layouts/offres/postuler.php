@@ -10,10 +10,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 // Définition des constantes pour le dossier de stockage des fichiers
 define('UPLOAD_DIR', 'uploads/');
-define('CV_DIR', UPLOAD_DIR . 'cv/');
-define('LDM_DIR', UPLOAD_DIR . 'ldm/');
-// Définition de la constante pour le dossier de base
-define('BASE_URL', 'http://localhost/projet-web/layouts/offres/uploads/');
+define('CV_DIR', 'cv/');
+define('LDM_DIR', 'ldm/');
 
 // Vérification de la soumission du formulaire
 if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
@@ -61,7 +59,7 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       if (in_array($cvFileExtension, $allowedExtensions) && $cvFileSize <= $maxFileSize) {
             // Déplacement du fichier vers le dossier de stockage 
             $cvNewFileName = 'CV - ' .  $_SESSION["username"] . ' - ' . uniqid() . '.' . $cvFileExtension;
-            $cvDestination = CV_DIR . $cvNewFileName;
+            $cvDestination = UPLOAD_DIR . CV_DIR . $cvNewFileName;
             move_uploaded_file($cvFileTmpName, $cvDestination);
       } else {
             if (!in_array($cvFileExtension, $allowedExtensions)) {
@@ -82,7 +80,7 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       if (in_array($lettreFileExtension, $allowedExtensions) && $lettreFileSize <= $maxFileSize) {
             // Déplacement du fichier vers le dossier de stockage 
             $lettreNewFileName = 'LETTRE - ' . $_SESSION["username"] . ' - ' . uniqid() . '.' . $lettreFileExtension;
-            $lettreDestination = LDM_DIR . $lettreNewFileName;
+            $lettreDestination = UPLOAD_DIR . LDM_DIR . $lettreNewFileName;
             move_uploaded_file($lettreFileTmpName, $lettreDestination);
       } else {
             if (!in_array($lettreFileExtension, $allowedExtensions)) {
@@ -101,8 +99,8 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       }
 
       // Insertion du chemin du fichier dans la base de données
-      $cv_name = BASE_URL . $cvDestination;
-      $ldm_name = BASE_URL . $lettreDestination;
+      $cv_name = $cvDestination;
+      $ldm_name = $lettreDestination;
 
       $sql = "INSERT INTO postule (id_c, id_offre, nom, prenom, mail, cv_name, ldm_name) VALUES (:id_c, :id_offre, :nom, :prenom, :mail, :cv_name, :ldm_name)";
       $stmt = $pdo->prepare($sql);

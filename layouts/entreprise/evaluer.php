@@ -31,6 +31,12 @@ require_once "../../config.php";
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
       </script>
+      <style>
+      .img-fluid {
+            max-width: 40%;
+            height: auto;
+      }
+      </style>
 </head>
 
 <body>
@@ -65,6 +71,10 @@ require_once "../../config.php";
                                     </h1>
                               </div>
                               <div class="card-body">
+                                    <div class="card-header">
+                                          <img src="<?php echo $entreprise['logo'] ?>" class="img-thumbnail img-fluid"
+                                                alt="Logo <?php echo $entreprise['nom'] ?>" />
+                                    </div>
                                     <div class="mb-3 row">
                                           <label class="col-sm-2 col-form-label">Nom</label>
                                           <div class="col-sm-10">

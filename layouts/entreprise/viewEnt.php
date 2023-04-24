@@ -26,6 +26,13 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
       <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/datatables.min.css" />
+
+      <style>
+      .img-fluid {
+            max-width: 40%;
+            height: auto;
+      }
+      </style>
 </head>
 
 <body>
@@ -57,6 +64,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         <div class="dropdown">
                               <button class="btn btn-outline-info dropdown-toggle" type="button"
                                     id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user mx-1"></i>
                                     <?php echo htmlspecialchars($_SESSION["username"]); ?>
                               </button>
                               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -77,7 +85,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                   <?php
                   require_once "../../config.php";
                   if (isset($_GET['id'])) {
-                        $sql = 'SELECT entreprise.id_entreprise, entreprise.nom, entreprise.nombre_etudiant,
+                        $sql = 'SELECT entreprise.id_entreprise, entreprise.logo, entreprise.nom, entreprise.nombre_etudiant,
                         ville.région, ville.ville, ville.code_postal,
                         secteur_activité.secteur,
                         GROUP_CONCAT(DISTINCT ville.ville SEPARATOR ", ") AS ville, 
@@ -102,6 +110,10 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                               <h1><?php echo htmlspecialchars($entreprise['nom']); ?></h1>
                         </div>
                         <div class="card-body">
+                              <div class="card-header">
+                                    <img src="<?php echo $entreprise['logo'] ?>" class="img-thumbnail img-fluid"
+                                          alt="Logo entreprise <?php echo $entreprise['nom'] ?>" />
+                              </div>
                               <div class="mb-3 row">
                                     <label class="col-sm-2 col-form-label">Nom</label>
                                     <div class="col-sm-10">

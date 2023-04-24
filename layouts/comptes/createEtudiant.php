@@ -20,10 +20,20 @@ require_once "../../config.php";
       <title>Création Compte Etudiant</title>
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css">
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css">
+
+      <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
       <style>
       .profile_img {
             margin-left: 35%;
             width: 40%;
+      }
+
+      .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+            width: 100%;
       }
       </style>
 </head>
@@ -32,19 +42,6 @@ require_once "../../config.php";
       <div class="container mt-5">
             <div class="card">
                   <h1 class="Offre card-header"> Créer un étudiant</h1>
-                  <?php
-                  $req = "SELECT * from entreprise";
-                  $entSel = $pdo->query($req);
-
-                  $req = "SELECT * from ville";
-                  $villeSel = $pdo->query($req);
-
-                  $req = "SELECT * from promotion";
-                  $promoSel = $pdo->query($req);
-
-                  if ($entSel && $villeSel && $promoSel) {
-
-                  ?>
                   <div class="card-body">
                         <form action="insertEtudiant.php" method="post" enctype="multipart/form-data">
                               <div class="row">
@@ -84,21 +81,6 @@ require_once "../../config.php";
                                           </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
-                                          <div class="form-group">
-                                                <label class="form-label" id="promo">Promotion</label>
-                                                <select name="promo" id="SelectPromo" class="form-select"
-                                                      aria-label="Default select example">
-                                                      <?php
-                                                            while ($tab = $promoSel->fetch()) {
-
-                                                                  echo '<option value="' . $tab[0] . '">' . $tab[1] . ' ' . $tab[2] . '</option>';
-                                                            }
-                                                            ?>
-                                                </select>
-                                          </div>
-                                    </div>
-
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
@@ -121,27 +103,47 @@ require_once "../../config.php";
                                     </div>
 
                                     <div class="col-md-6">
-                                          <label for="FormInput" class="form-label">Site</label>
-                                          <div class="mb-3">
-                                                <input class="form-control" list="datalistOptions" id="ville"
-                                                      name="ville" placeholder="Commencez à ecrire...">
-                                                <datalist id="datalistOptions">
-                                                      <?php
-                                                            foreach ($villes as $ville) {
-                                                                  echo "<option value='{$ville['ville']}'>{$ville['ville']}</option>";
-                                                            }
-                                                            ?>
-                                                </datalist>
+                                          <div class="form-group">
+                                                <label for="FormInput" class="form-label">Promotion</label>
+                                                <div class="mb-3">
+                                                      <select name="promotion" class="selectpicker"
+                                                            data-live-search="true">
+                                                            <?php
+                                                                  $sql = "SELECT * from promotion";
+                                                                  $result = $pdo->query($sql);
+                                                                  foreach ($result as $promotion) {
+                                                                        echo "<option value=" . $promotion['id_promotion'] . ">{$promotion['nom_promo']}</option>";
+                                                                  }
+                                                                  ?>
+                                                      </select>
+                                                </div>
                                           </div>
                                     </div>
 
                                     <div class="col-md-6">
+                                          <label for="FormInput" class="form-label">Site</label>
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <select name="ville" class="selectpicker" data-live-search="true">
+                                                            <?php
+                                                                  $sql = "SELECT * from ville";
+                                                                  $result = $pdo->query($sql);
+                                                                  foreach ($result as $ville) {
+                                                                        echo "<option value=" .$ville['id_ville'] . ">{$ville['ville']}</option>";
+                                                                  }
+                                                                  ?>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
                                           <label for="FormInput" class="form-label Offre">Photo de profil
                                           </label>
                                           <img src=".\upload\profile_pics\default.png" class="profile_img"
                                                 id="profile_img" alt="Responsive image"> </img>
-                                          <input class="form-control form-control-sm inpt" id="image_file" type="file"
-                                                accept="image/*" name="profile_img" />
+                                          <input class="form-control form-control-sm inpt" id="imgProfil" type="file"
+                                                accept="image/*" name="imgProfil" />
                                     </div>
 
                               </div>
@@ -150,8 +152,6 @@ require_once "../../config.php";
 
                         </form>
                   </div>
-                  <?php
-                  } ?>
             </div>
       </div>
 

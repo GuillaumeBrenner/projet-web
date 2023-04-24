@@ -30,6 +30,11 @@ require_once "../../config.php";
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
       <style>
+      .profile_img {
+            margin-left: 35%;
+            width: 40%;
+      }
+
       .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
             width: 100%;
       }
@@ -39,10 +44,7 @@ require_once "../../config.php";
 
 <body>
       <style>
-      .profile_img {
-            margin-left: 35%;
-            width: 40%;
-      }
+
       </style>
 
       <div class="container">

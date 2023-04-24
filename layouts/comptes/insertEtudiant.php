@@ -1,92 +1,119 @@
 <?php
+// Initialize the session
+session_start();
 
-// Create a new connection to the MySQL database using PDO, $my_Db_Connection is an object
-require_once "../../config.php";
-
-var_dump($_POST);
-var_dump($_FILES);
-
-$tmpName = $_FILES['profile_img']['tmp_name'];
-$name = $_FILES['profile_img']['name'];
-$size = $_FILES['profile_img']['size'];
-$error = $_FILES['profile_img']['error'];
-$tabExtension = explode('.', $name);
-$extension = strtolower(end($tabExtension));
-$uniqueName = uniqid('', true);
-$file = $uniqueName.".".$extension;
-move_uploaded_file($tmpName, '../../upload/profile_pics/'.$file);
-
-$photo_profil = '../../upload/profile_pics/'.$file;
-
-if ($size == 0) {
-    $photo_profil = '../../upload/profile_pics/default.png';
+// Check if the user is logged in, if not then redirect him to login page
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+  header("Location: ../../login.php");
+  exit;
 }
 
-// Set the variables for the person we want to add to the database
-$nom = $_POST["nom"];
-$prenom = $_POST["prenom"];
-$sexe = $_POST["sexe"];
+// Définition des constantes pour le dossier de stockage des fichiers
+define('UPLOAD_DIR', 'uploads/');
+define('PROFIL_DIR', 'imgEtudiant/');
 
-//set the variable for the ville of the person
-$Ville = substr($_POST["ville"] , 0 , -7);
+// Vérification de la soumission du formulaire
+if (isset($_POST['insertEtudiant'])) {
+  // Connexion à la base de données MySQL avec PDO
+  require_once "../../config.php";
 
-//set the variable for the compte we want to create
-$login = $_POST["login"];
-$mdp = $_POST["mdp"];
-$id_entreprise="";
+  // Récupération des données du formulaire
+  $nom = $_POST['nom'];
+  $prenom = $_POST['prenom'];
+  $sexe = $_POST['sexe'];
+  $login = $_POST['login'];
+  $mdp = $_POST['mdp'];
+  $promotion = $_POST['promotion'];
+  $ville = $_POST['ville'];
+  $id_entreprise = "";
+  $idtype = 3;
+  $validite = 1;
 
-//set the variable for the type we want to create
-$idtype= 3;
+  var_dump($_FILES);
+  var_dump($_POST);
 
-//the photo of profil part of the projet
+  // Récupération des informations du fichier PROFIL soumis
+  $File = $_FILES['imgProfil'];
+  $FileName = $File['name'];
+  $FileType = $File['type'];
+  $FileTmpName = $File['tmp_name'];
+  $FileError = $File['error'];
+  $FileSize = $File['size'];
 
+  // Vérification des types de fichiers autorisés
+  $allowedExtensions = array('jpg', 'jpeg', 'png');
+  $FileExtension = strtolower(pathinfo($FileName, PATHINFO_EXTENSION));
 
+  // Vérification du type de fichier et de la taille pour la photo
+  $maxFileSize = 10485760;
 
+  if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
+    // Déplacement du fichier vers le dossier de stockage 
+    $NewFileName = 'PRFIL - ' . $nom . ' - ' . uniqid() . '.' . $FileExtension;
+    $Destination = UPLOAD_DIR . PROFIL_DIR . $NewFileName;
+    move_uploaded_file($FileTmpName, $Destination);
+  } else {
+    if (!in_array($FileExtension, $allowedExtensions)) {
+      $_SESSION['supp'] = "La photo de profil doit être au format : JPG, JPEG, PNG. ";
+      header("Location: listComptes.php");
+      exit();
+    } elseif ($FileSize > $maxFileSize) {
+      $_SESSION['supp'] = "La taille de la photo de profil est trop grande (ne doit pas dépasser 10Mo). ";
+      header("Location: listComptes.php");
+      exit();
+    }
+    $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement du photo de profil, Veuillez réessayer";
+    header("Location: listComptes.php");
+    exit();
+  }
 
-// Here we create a variable that calls the prepare() method of the database object
-// The SQL query you want to run is entered as the parameter, and placeholders are written like this :placeholder_name
-$person_creation= $pdo->prepare("INSERT INTO personne (Nom, Prenom, sexe ) VALUES (:nom, :prenom, :sexe)");
+  // Insertion du chemin du fichier dans la base de données
+  $profil_name = $Destination;
+  try {
+    // Insertion de personne dans la table personne
+    $sql = "INSERT INTO personne (Nom, Prenom, sexe ) VALUES (:nom, :prenom, :sexe)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":nom", $nom);
+    $stmt->bindParam(":prenom", $prenom);
+    $stmt->bindParam(":sexe", $sexe);
+    $stmt->execute();
+    // Récupération de l'identifiant de la personne insérée
+    $id_personne = $pdo->lastInsertId();
 
-// Now we tell the script which variable each placeholder actually refers to using the bindParam() method
-// First parameter is the placeholder in the statement above - the second parameter is a variable that it should refer to
-$person_creation->bindParam(":nom", $nom);
-$person_creation->bindParam(":prenom", $prenom);
-$person_creation->bindParam(":sexe", $sexe);
+    // Insertion de compte dans la table compte
+    $sql = "INSERT INTO compte (login, photo_profil, mdp, validite, id_personne, id_type) VALUES (:login, :photo_profil, :mdp, :validite, :id_personne, :id_type )";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":login", $login);
+    $stmt->bindParam(":mdp", $mdp);
+    $stmt->bindParam(":photo_profil", $profil_name);
+    $stmt->bindParam(":validite", $validite);
+    $stmt->bindParam(":id_personne", $id_personne);
+    $stmt->bindParam(":id_type", $idtype);
+    $stmt->execute();
+    // Récupération de l'identifiant de la personne insérée
+    $id_compte = $pdo->lastInsertId();
 
-//recuperating personne id
-if($person_creation->execute())
-{
-    $idPersonne_created = $pdo->lastInsertId();
+    // Insertion de compte dans la table Centre
+    $sql = "INSERT INTO centre (id_c, id_ville ) VALUES ( :id_c, :id_ville )";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":id_c", $id_compte);
+    $stmt->bindParam(":id_ville", $ville);
+    $stmt->execute();
+
+    // Insertion de compte dans la table ETRE PROMO
+    $sql = "INSERT INTO etre_promo (id_c, id_promotion ) VALUES ( :id_c, :id_promotion )";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":id_c", $id_compte);
+    $stmt->bindParam(":id_promotion", $promotion);
+    $stmt->execute();
+
+    // Message de réussite
+    $_SESSION['status'] = "Compte Etudiant créé avec succès.";
+    header("Location: listComptes.php");
+    exit();
+  } catch (PDOException) {
+    $_SESSION['supp'] = "Une erreur est survenue, Veuillez réessayer";
+    header("Location: listComptes.php");
+    exit();
+  }
 }
-
-$villeid = $pdo->prepare("SELECT id_ville FROM ville WHERE ville = :ville");
-$villeid->bindParam(":ville", $Ville);
-$villeid->execute();
-$idville_selected = $villeid->fetch(PDO::FETCH_ASSOC)['id_ville'];
-
-$validite = 1;
-
-//creation compte etudiant
-
-$compte_etudiant_creation = $pdo->prepare("INSERT INTO compte (login, photo_profil, mdp, validite, id_personne, id_type) VALUES (:login, :photo_profil, :mdp, :validite, :id_personne, :id_type )");
-$compte_etudiant_creation->bindParam(":login", $login);
-$compte_etudiant_creation->bindParam(":photo_profil", $photo_profil);
-$compte_etudiant_creation->bindParam(":mdp", $motdepasse);
-$compte_etudiant_creation->bindParam(":validite", $validite);
-$compte_etudiant_creation->bindParam(":id_personne", $idpersonne_created);
-$compte_etudiant_creation->bindParam(":id_type", $idtype);
-
-if($compte_etudiant_creation->execute())
-{
-  $idEtudiant_created = $pdo->lastInsertId();
-}
-
-//relying compte w his locality whit the table "centre"
-$compte_centre_creation=$pdo->prepare("INSERT INTO centre (id_c, id_ville ) VALUES ( :id_c, :id_ville )");
-$compte_centre_creation->bindParam(":id_c", $idEtudiant_created);
-$compte_centre_creation->bindParam(":id_ville", $idville_selected);
-$compte_centre_creation->execute();
-
-header("Location : listComptes.php")
-
-?>

@@ -59,6 +59,7 @@ if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
                               <div class="dropdown">
                                     <button class="btn btn-outline-info dropdown-toggle" type="button"
                                           id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                          <i class="fas fa-user mx-1"></i>
                                           <?php echo htmlspecialchars($_SESSION["username"]); ?>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">

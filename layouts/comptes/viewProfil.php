@@ -93,8 +93,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                   <div class="card text-center mb-5">
                         <div class="row">
                               <div class="col-md-6">
-                                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($row['photo_profil']); ?>"
-                                          class="img-fluid rounded-start" />
+                                    <img src="<?php echo $row['photo_profil'] ?>" class="img-fluid rounded-start" />
                               </div>
                               <div class="col-md-6">
                                     <div class="card-body">
@@ -135,6 +134,9 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                               </div>
                         </div>
                   </div>
+                  <?php }
+
+                              ?>
 
                   <div class="card text-center mb-5">
                         <div class="card-header">
@@ -142,51 +144,52 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         </div>
                         <div class="card-body">
                               <?php
-                              // Attempt select query execution
-                              $sql = "SELECT *
+                                          // Attempt select query execution
+                                          $sql = "SELECT *
                               FROM postule p 
                               INNER JOIN compte c ON c.id_c = p.id_c
                               INNER JOIN personne pe ON pe.id_personne = c.id_personne
                               INNER JOIN offre o ON o.id_offre = p.id_offre
                               WHERE pe.id_personne =  " . $_GET['id'];
-                                    }
 
-                                    if ($result = $pdo->query($sql)) {
-                                          if ($result->rowCount() > 0) {
-                                                echo '<div class="col-md-12">';
-                                                echo '<table id="dataList" class="table table-bordered table-striped">';
-                                                echo "<thead>";
-                                                echo "<tr>";
-                                                echo "<th>#</th>";
-                                                echo "<th>Titre</th>";
-                                                echo "<th>Date</th>";
-                                                echo "<th>Rémunération</th>";
-                                                echo "<th>Nombre de places</th>";
-                                                echo "</tr>";
-                                                echo "</thead>";
-                                                echo "<tbody>";
-                                                while ($row = $result->fetch()) {
+                                          if ($result = $pdo->query($sql)) {
+                                                if ($result->rowCount() > 0) {
+                                                      echo '<div class="col-md-12">';
+                                                      echo '<table id="dataList" class="table table-bordered table-striped">';
+                                                      echo "<thead>";
                                                       echo "<tr>";
-                                                      echo "<td>" . $row['id_offre'] . "</td>";
-                                                      echo "<td>" . $row['Titre'] . "</td>";
-                                                      echo "<td>" . $row['Date_post'] . "</td>";
-                                                      echo "<td>" . $row['Remuneration'] . "</td>";
-                                                      echo "<td>" . $row['nombre_places'] . "</td>";
+                                                      echo "<th>#</th>";
+                                                      echo "<th>Titre</th>";
+                                                      echo "<th>Date</th>";
+                                                      echo "<th>Rémunération</th>";
+                                                      echo "<th>Nombre de places</th>";
+                                                      echo "<th>CV</th>";
                                                       echo "</tr>";
+                                                      echo "</thead>";
+                                                      echo "<tbody>";
+                                                      while ($data = $result->fetch()) {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $data['id_offre'] . "</td>";
+                                                            echo "<td>" . $data['Titre'] . "</td>";
+                                                            echo "<td>" . $data['Date_post'] . "</td>";
+                                                            echo "<td>" . $data['Remuneration'] . "</td>";
+                                                            echo "<td>" . $data['nombre_places'] . "</td>";
+                                                            echo '<td><a href="' . $data['cv_name'] . '">télécharger</a></td>';
+                                                            echo "</tr>";
+                                                      }
+                                                      echo "</tbody>";
+                                                      echo "</table>";
+                                                      echo "</div>";
+                                                      // Free result set
+                                                      unset($result);
+                                                } else {
+                                                      echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
                                                 }
-                                                echo "</tbody>";
-                                                echo "</table>";
-                                                echo "</div>";
-                                                // Free result set
-                                                unset($result);
                                           } else {
-                                                echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
+                                                echo "Oops! Réessayer plus tard.";
                                           }
-                                    } else {
-                                          echo "Oops! Réessayer plus tard.";
-                                    }
-                                    // Close connection
-                                    unset($pdo);
+                                          // Close connection
+                                          unset($pdo);
                                           ?>
                         </div>
                         <div class="card-footer text-muted"></div>
@@ -197,58 +200,58 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                         </div>
                         <div class="card-body">
                               <?php
-                              $pdo = new PDO("mysql:host=localhost;dbname=projetWeb", "root", "");
-                              // Attempt select query execution
-                              $req = "SELECT w.id_offre, o.Titre, o.Date_post, o.Remuneration, o.nombre_places
+                                          $pdo = new PDO("mysql:host=localhost;dbname=projetWeb", "root", "");
+                                          // Attempt select query execution
+                                          $req = "SELECT w.id_offre, o.Titre, o.Date_post, o.Remuneration, o.nombre_places
                               FROM wishlist w
                               INNER JOIN compte c ON c.id_c = w.id_c
                               INNER JOIN personne pe ON pe.id_personne = c.id_personne
                               INNER JOIN offre o ON o.id_offre = w.id_offre
                               WHERE pe.id_personne =  " . $_GET['id'];
 
-                                                if ($data = $pdo->query($req)) {
-                                                      if ($data->rowCount() > 0) {
-                                                            echo '<div class="col-md-12">';
-                                                            echo '<table id="dataList" class="table table-bordered table-striped">';
-                                                            echo "<thead>";
+                                          if ($data = $pdo->query($req)) {
+                                                if ($data->rowCount() > 0) {
+                                                      echo '<div class="col-md-12">';
+                                                      echo '<table id="dataList" class="table table-bordered table-striped">';
+                                                      echo "<thead>";
+                                                      echo "<tr>";
+                                                      echo "<th>#</th>";
+                                                      echo "<th>Titre</th>";
+                                                      echo "<th>Date</th>";
+                                                      echo "<th>Rémunération</th>";
+                                                      echo "<th>Nombre de places</th>";
+                                                      echo "<th>Action</th>";
+                                                      echo "</tr>";
+                                                      echo "</thead>";
+                                                      echo "<tbody>";
+                                                      while ($row = $data->fetch()) {
                                                             echo "<tr>";
-                                                            echo "<th>#</th>";
-                                                            echo "<th>Titre</th>";
-                                                            echo "<th>Date</th>";
-                                                            echo "<th>Rémunération</th>";
-                                                            echo "<th>Nombre de places</th>";
-                                                            echo "<th>Action</th>";
-                                                            echo "</tr>";
-                                                            echo "</thead>";
-                                                            echo "<tbody>";
-                                                            while ($row = $data->fetch()) {
-                                                                  echo "<tr>";
-                                                                  echo "<td>" . $row['id_offre'] . "</td>";
-                                                                  echo "<td>" . $row['Titre'] . "</td>";
-                                                                  echo "<td>" . $row['Date_post'] . "</td>";
-                                                                  echo "<td>" . $row['Remuneration'] . "</td>";
-                                                                  echo "<td>" . $row['nombre_places'] . "</td>";
-                                                                  echo "<td>";
-                                                                  echo '<a href="../offres/viewOffre.php?id=' . $row['id_offre'] . '" title="Details"
+                                                            echo "<td>" . $row['id_offre'] . "</td>";
+                                                            echo "<td>" . $row['Titre'] . "</td>";
+                                                            echo "<td>" . $row['Date_post'] . "</td>";
+                                                            echo "<td>" . $row['Remuneration'] . "</td>";
+                                                            echo "<td>" . $row['nombre_places'] . "</td>";
+                                                            echo "<td>";
+                                                            echo '<a href="../offres/viewOffre.php?id=' . $row['id_offre'] . '" title="Details"
                                                 data-bs-target="#compte"><span class="fa fa-eye"></span></a>';
-                                                                  echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
-                                                                  echo "</td>";
-                                                                  echo "</tr>";
-                                                            }
-                                                            echo "</tbody>";
-                                                            echo "</table>";
-                                                            echo "</div>";
-                                                            // Free result set
-                                                            unset($result);
-                                                      } else {
-                                                            echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
+                                                            echo '<a href="#" class="ms-3 deletebtn"><span class="fa fa-trash"></span></a>';
+                                                            echo "</td>";
+                                                            echo "</tr>";
                                                       }
+                                                      echo "</tbody>";
+                                                      echo "</table>";
+                                                      echo "</div>";
+                                                      // Free result set
+                                                      unset($result);
                                                 } else {
-                                                      echo "Oops! Réessayer plus tard.";
+                                                      echo '<div class="alert alert-danger"><em>Aucune donnée</em></div>';
                                                 }
-                                                // Close connection
-                                                unset($pdo);
-                                                ?>
+                                          } else {
+                                                echo "Oops! Réessayer plus tard.";
+                                          }
+                                          // Close connection
+                                          unset($pdo);
+                                          ?>
                         </div>
                         <div class="card-footer text-muted"></div>
                   </div>

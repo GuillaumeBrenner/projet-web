@@ -59,6 +59,7 @@ require_once "../../config.php";
                         <div class="dropdown">
                               <button class="btn btn-outline-info dropdown-toggle" type="button"
                                     id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user mx-1"></i>
                                     <?php echo htmlspecialchars($_SESSION["username"]); ?>
                               </button>
                               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -90,13 +91,12 @@ require_once "../../config.php";
 
                   if ($result = $pdo->query($sql)) {
                         if ($result->rowCount() > 0) {
-                              while ($row = $result->fetch()) {
+                              while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                   ?>
                   <div class="card text-center mb-5">
                         <div class="row">
                               <div class="col-md-6">
-                                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($row['photo_profil']); ?>"
-                                          class="img-fluid rounded-start" />
+                                    <img src="<?php echo $row['photo_profil']; ?>" class="img-fluid rounded-start" />
                               </div>
                               <div class="col-md-6">
                                     <div class="card-body">
@@ -275,6 +275,8 @@ require_once "../../config.php";
                                                 echo "<th>Date</th>";
                                                 echo "<th>Rémunération</th>";
                                                 echo "<th>Nombre de places</th>";
+                                                echo "<th>CV</th>";
+                                                echo "<th>Lettre de motivation</th>";
                                                 echo "</tr>";
                                                 echo "</thead>";
                                                 echo "<tbody>";
@@ -285,6 +287,8 @@ require_once "../../config.php";
                                                       echo "<td>" . $row['Date_post'] . "</td>";
                                                       echo "<td>" . $row['Remuneration'] . "</td>";
                                                       echo "<td>" . $row['nombre_places'] . "</td>";
+                                                      echo '<td><a href="' . $row['cv_name'] . '">télécharger</a></td>';
+                                                      echo '<td><a href="' . $row['ldm_name'] . '">télécharger</a></td>';
                                                       echo "</tr>";
                                                 }
                                                 echo "</tbody>";
