@@ -140,7 +140,7 @@ require_once "../../config.php";
                                     <div class="col-md-6 mb-3">
                                           <label for="FormInput" class="form-label Offre">Photo de profil
                                           </label>
-                                          <img src=".\upload\profile_pics\default.png" class="profile_img"
+                                          <img src=".\uploads\profile_pics\default.png" class="profile_img"
                                                 id="profile_img" alt="Responsive image"> </img>
                                           <input class="form-control form-control-sm inpt" id="imgProfil" type="file"
                                                 accept="image/*" name="imgProfil" />

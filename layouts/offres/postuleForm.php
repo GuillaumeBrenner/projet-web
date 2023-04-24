@@ -77,6 +77,16 @@ if (isset($_GET['id'])) {
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
+                                                      <label class="form-label Offre">Téléphone</label>
+                                                      <input type="tel" class="form-control" id="telephone"
+                                                            name="telephone" required>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
                                                       <label for="file" class="form-label">CV</label>
                                                       <input type="file" id="cv" name="cv" class="form-control"
                                                             required>

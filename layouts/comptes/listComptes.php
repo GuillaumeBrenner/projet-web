@@ -206,7 +206,7 @@ if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
 <script>
 $(document).ready(function() {
 
-      $('.editbtn').on('click', function() {
+      $('#dataList').on('click', '.editbtn', function() {
 
             $('#editCompte').modal('show');
 
@@ -218,7 +218,7 @@ $(document).ready(function() {
 
             console.log(data);
 
-            $('#id_personne').val(data[0]);
+            $('#Update_idPersonne').val(data[0]);
             $('#Nom').val(data[1]);
             $('#Prenom').val(data[2]);
             $('#sexe').val(data[3]);
@@ -237,7 +237,7 @@ $(document).ready(function() {
                   <form action="updateCompte.php" method="post">
                         <div class="modal-body">
                               <div class="row">
-                                    <input type="hidden" name="id_personne" id="id_personne">
+                                    <input type="hidden" name="id_personne" id="Update_idPersonne">
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">
@@ -286,7 +286,7 @@ $(document).ready(function() {
 <script>
 $(document).ready(function() {
 
-      $('.deletebtn').on('click', function() {
+      $('#dataList').on('click', '.deletebtn', function() {
 
             $('#deletemodal').modal('show');
 

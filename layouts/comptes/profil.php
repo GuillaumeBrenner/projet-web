@@ -116,8 +116,8 @@ require_once "../../config.php";
                         <div class="card-body">
                               <div class="row">
                                     <div class="col-12">
-                                          <button type="button" class="btn btn-warning editbtn" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal">Modifier</button>
+                                          <button type="button" class="btn btn-outline-info editbtn"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">Modifier</button>
                                     </div>
                               </div>
                         </div>
@@ -280,15 +280,15 @@ require_once "../../config.php";
                                                 echo "</tr>";
                                                 echo "</thead>";
                                                 echo "<tbody>";
-                                                while ($row = $result->fetch()) {
+                                                while ($data = $result->fetch()) {
                                                       echo "<tr>";
-                                                      echo "<td>" . $row['id_offre'] . "</td>";
-                                                      echo "<td>" . $row['Titre'] . "</td>";
-                                                      echo "<td>" . $row['Date_post'] . "</td>";
-                                                      echo "<td>" . $row['Remuneration'] . "</td>";
-                                                      echo "<td>" . $row['nombre_places'] . "</td>";
-                                                      echo '<td><a href="' . $row['cv_name'] . '">télécharger</a></td>';
-                                                      echo '<td><a href="' . $row['ldm_name'] . '">télécharger</a></td>';
+                                                      echo "<td>" . $data['id_offre'] . "</td>";
+                                                      echo "<td>" . $data['Titre'] . "</td>";
+                                                      echo "<td>" . $data['Date_post'] . "</td>";
+                                                      echo "<td>" . $data['Remuneration'] . "</td>";
+                                                      echo "<td>" . $data['nombre_places'] . "</td>";
+                                                      echo '<td><a target="link" href="' . $data['cv_name'] . '"><button class="btn btn-secondary"><i class="fas fa-download"></i></button></a></td>';
+                                                      echo '<td><a target="link" href="' . $data['ldm_name'] . '"><button class="btn btn-secondary"><i class="fas fa-download"></i></button></a></td>';
                                                       echo "</tr>";
                                                 }
                                                 echo "</tbody>";

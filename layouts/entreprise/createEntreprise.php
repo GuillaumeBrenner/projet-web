@@ -116,8 +116,8 @@ require_once "../../config.php";
                                           <div class="col-md-6 mb-3">
                                                 <div class="form-group">
                                                       <label for="file" class="form-label">Logo</label>
-                                                      <img src="..\comptes\upload\profile_pics\default.png"
-                                                            class="profile_img" id="profile_img" alt="Responsive image">
+                                                      <img src="..\comptes\uploads\profile_pics\default.png"
+                                                            class="profile_img" id="profile_img" alt="">
                                                       </img>
                                                       <input type="file" id="logo" name="logo" class="form-control"
                                                             required>

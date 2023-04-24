@@ -29,6 +29,33 @@ $entSelect = $pdo->query($req);
       <title>Création Offre</title>
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css">
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css">
+      <!-- <style>
+            .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            display: none;
+            /* Cacher le spinner par défaut */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -60px;
+            margin-left: -60px;
+            }
+
+            @keyframes spin {
+            0% {
+            transform: rotate(0deg);
+            }
+
+            100% {
+            transform: rotate(360deg);
+            }
+            }
+            </style> -->
 </head>
 
 <body>
@@ -161,13 +188,14 @@ $entSelect = $pdo->query($req);
                                     </div>
 
                               </div>
-                              <button type="submit" name="insertOffre" class="btn btn-primary">Soumettre</button>
+                              <button type="submit" class="btn btn-primary" name="insertOffre">Soumettre</button>
                               <a href="listOffre.php" class="btn btn-outline-danger">Annuler</a>
 
                         </form>
                   </div>
             </div>
       </div>
+      <div id="loader" class="loader" style="display: none;"></div>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"

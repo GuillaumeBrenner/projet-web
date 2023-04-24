@@ -382,7 +382,7 @@ require_once "../../config.php";
                                           <div class="form-group">
                                                 <div class="mb-3">
                                                       <label class="form-label Offre">Description</label>
-                                                      <input type="Text" class="form-control Description" id="descrip"
+                                                      <input type="Text" class="form-control" id="descrip"
                                                             name="descrip">
                                                 </div>
                                           </div>

@@ -12,6 +12,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 define('UPLOAD_DIR', 'uploads/');
 define('CV_DIR', 'cv/');
 define('LDM_DIR', 'ldm/');
+define('BASE_URL', 'http://localhost/projet-web/layouts/offres/');
 
 // Vérification de la soumission du formulaire
 if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
@@ -31,6 +32,7 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       $nom = $_POST['nom'];
       $prenom = $_POST['prenom'];
       $mail = $_POST['mail'];
+      $telephone = $_POST['telephone'];
 
       // Récupération des informations du fichier CV soumis
       $cvFile = $_FILES['cv'];
@@ -99,16 +101,17 @@ if (isset($_FILES['cv']) && isset($_FILES['ldm'])) {
       }
 
       // Insertion du chemin du fichier dans la base de données
-      $cv_name = $cvDestination;
-      $ldm_name = $lettreDestination;
+      $cv_name = BASE_URL .$cvDestination;
+      $ldm_name = BASE_URL .$lettreDestination;
 
-      $sql = "INSERT INTO postule (id_c, id_offre, nom, prenom, mail, cv_name, ldm_name) VALUES (:id_c, :id_offre, :nom, :prenom, :mail, :cv_name, :ldm_name)";
+      $sql = "INSERT INTO postule (id_c, id_offre, nom, prenom, mail,telephone, cv_name, ldm_name) VALUES (:id_c, :id_offre, :nom, :prenom, :mail, :telephone, :cv_name, :ldm_name)";
       $stmt = $pdo->prepare($sql);
       $stmt->bindParam(':id_c', $id_c);
       $stmt->bindParam(':id_offre', $id_offre);
       $stmt->bindParam(':nom', $nom);
       $stmt->bindParam(':prenom', $prenom);
       $stmt->bindParam(':mail', $mail, PDO::PARAM_STR);
+      $stmt->bindParam(':telephone', $telephone);
       $stmt->bindParam(':cv_name', $cv_name);
       $stmt->bindParam(':ldm_name', $ldm_name);
 

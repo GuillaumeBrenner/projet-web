@@ -164,6 +164,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                                                       echo "<th>Rémunération</th>";
                                                       echo "<th>Nombre de places</th>";
                                                       echo "<th>CV</th>";
+                                                      echo "<th>Lettre de motivation</th>";
                                                       echo "</tr>";
                                                       echo "</thead>";
                                                       echo "<tbody>";
@@ -175,6 +176,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                                                             echo "<td>" . $data['Remuneration'] . "</td>";
                                                             echo "<td>" . $data['nombre_places'] . "</td>";
                                                             echo '<td><a href="' . $data['cv_name'] . '">télécharger</a></td>';
+                                                            echo '<td><a href="' . $data['ldm_name'] . '">télécharger</a></td>';
                                                             echo "</tr>";
                                                       }
                                                       echo "</tbody>";
