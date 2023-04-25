@@ -17,7 +17,7 @@ require_once "../../config.php";
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Création Compte Pilote</title>
+      <title>Création un utilisateur</title>
       <link rel="stylesheet" href="../../assets/vendors/fontawesome/css/all.min.css">
       <link rel="stylesheet" href="../../assets/vendors/bootstrap/css/bootstrap.min.css">
 
@@ -41,9 +41,9 @@ require_once "../../config.php";
 <body>
       <div class="container mt-5">
             <div class="card">
-                  <h1 class="Offre card-header"> Créer un Pilote</h1>
+                  <h1 class="Offre card-header"> Créer un utilisateur</h1>
                   <div class="card-body">
-                        <form action="insertPilote.php" method="post" enctype="multipart/form-data">
+                        <form action="insertUsers.php" method="post" enctype="multipart/form-data">
                               <div class="row">
                                     <input type="hidden" name="id_type" id="id_type">
 
@@ -77,6 +77,16 @@ require_once "../../config.php";
                                                             <option value="O">Ne se prononce pas
                                                             </option>
                                                       </select>
+                                                </div>
+                                          </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label for="FormInput" class="form-label Offre">Email
+                                                      </label>
+                                                      <input type="mail" class="form-control" id="mail" name="mail">
                                                 </div>
                                           </div>
                                     </div>
@@ -140,15 +150,15 @@ require_once "../../config.php";
                                     <div class="col-md-6 mb-3">
                                           <label for="FormInput" class="form-label Offre">Photo de profil
                                           </label>
-                                          <img src=".\uploads\profile_pics\default.png" class="profile_img"
+                                          <img src="..\comptes\uploads\profile_pics\default.png" class="profile_img"
                                                 id="profile_img" alt="Responsive image"> </img>
                                           <input class="form-control form-control-sm inpt" id="imgProfil" type="file"
                                                 accept="image/*" name="imgProfil" />
                                     </div>
 
                               </div>
-                              <button type="submit" name="insertPilote" class="btn btn-primary">Soumettre</button>
-                              <a href="listComptes.php" class="btn btn-outline-danger">Annuler</a>
+                              <button type="submit" name="insertUser" class="btn btn-primary">Soumettre</button>
+                              <a href="listUsers.php" class="btn btn-outline-danger">Annuler</a>
 
                         </form>
                   </div>

@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $username = $_POST['username'];
             $password = $_POST['password'];
             // Prepare a select statement
-            $sql = "SELECT * FROM compte WHERE login = :username and mdp = :password";
+            $sql = "SELECT * FROM compte WHERE login = :username AND mdp = :password";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
             $stmt->bindParam(':password', $param_password, PDO::PARAM_STR);

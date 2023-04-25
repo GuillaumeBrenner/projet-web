@@ -135,11 +135,12 @@ if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
                                     require_once "../../config.php";
 
                                     // Attempt select query execution
-                                    $sql = "SELECT compte.id_c, personne.id_personne, personne.Nom , personne.Prenom , personne.sexe, type_compte.type 
+                                    $sql = "SELECT compte.id_c, personne.id_personne, personne.Nom , personne.Prenom , personne.sexe,personne.mail,
+                                     type_compte.type, compte.id_type 
                                     FROM compte 
-                                    JOIN personne ON compte.id_personne = personne.id_personne
-                                    JOIN type_compte ON compte.id_type = type_compte.id_type
-                                    WHERE validite = 1";
+                                    INNER JOIN personne ON compte.id_personne = personne.id_personne
+                                    INNER JOIN type_compte ON compte.id_type = type_compte.id_type
+                                    WHERE validite = 1 AND compte.id_type = 3";
                                     if ($result = $pdo->query($sql)) {
                                           if ($result->rowCount() > 0) {
                                                 echo '<div class="col-md-12">';
@@ -150,6 +151,7 @@ if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
                                                 echo "<th>Nom</th>";
                                                 echo "<th>Prénom</th>";
                                                 echo "<th>Sexe</th>";
+                                                echo "<th>Email</th>";
                                                 echo "<th>Type de compte</th>";
                                                 echo "<th>Action</th>";
                                                 echo "</tr>";
@@ -161,6 +163,7 @@ if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
                                                       echo "<td>" . $row['Nom'] . "</td>";
                                                       echo "<td>" . $row['Prenom'] . "</td>";
                                                       echo "<td>" . $row['sexe'] . "</td>";
+                                                      echo "<td>" . $row['mail'] . "</td>";
                                                       echo "<td>" . $row['type'] . "</td>";
                                                       echo "<td>";
                                                       echo '<a href="viewProfil.php?id=' . $row['id_personne'] . '" title="Details"
@@ -218,7 +221,7 @@ $(document).ready(function() {
 
             console.log(data);
 
-            $('#Update_idPersonne').val(data[0]);
+            $('#id_c').val(data[0]);
             $('#Nom').val(data[1]);
             $('#Prenom').val(data[2]);
             $('#sexe').val(data[3]);
@@ -231,13 +234,13 @@ $(document).ready(function() {
       <div class="modal-dialog modal-lg">
             <div class="modal-content">
                   <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de l'offre</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification de Compte</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <form action="updateCompte.php" method="post">
                         <div class="modal-body">
                               <div class="row">
-                                    <input type="hidden" name="id_personne" id="Update_idPersonne">
+                                    <input type="hidden" name="id_c" id="id_c">
                                     <div class="col-md-6">
                                           <div class="form-group">
                                                 <div class="mb-3">

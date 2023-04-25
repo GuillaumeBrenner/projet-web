@@ -11,17 +11,21 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 if (isset($_POST['updateCompte'])) {
       require_once "../../config.php";
 
-      $id_p = $_POST['id_personne'];
-
+      $id_c = $_POST['id_c'];
+      
+      $sql = "SELECT id_personne FROM compte  WHERE id_c = '$id_c' ";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      $id_personne = $stmt->fetch(PDO::FETCH_ASSOC)['id_personne'];
+      
       $Nom = $_POST["Nom"];
       $Prenom = $_POST["Prenom"];
       $sexe = $_POST["sexe"];
 
-      $sql = "UPDATE personne SET Nom='$Nom', Prenom='$Prenom', sexe='$sexe' WHERE id_personne = '$id_p'";
+      $sql = "UPDATE personne SET Nom='$Nom', Prenom='$Prenom', sexe='$sexe' WHERE id_personne = '$id_personne'";
+      $stmt = $pdo->prepare($sql);
 
-      $stmt = $pdo->exec($sql);
-
-      if ($stmt) {
+      if ($stmt->execute()) {
             $_SESSION['status'] = "Modification de compte réussie";
             header("Location: listComptes.php");
       } else {

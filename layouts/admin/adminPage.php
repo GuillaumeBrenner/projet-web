@@ -9,6 +9,22 @@ if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
 }
 
 require_once "../../config.php";
+
+$req = $pdo->prepare("SELECT COUNT(id_c) FROM `compte` WHERE validite = 1 AND id_type = 3");
+$req->execute();
+$nbcompte = $req->fetchColumn();
+
+$req = $pdo->prepare("SELECT COUNT(id_entreprise) FROM `entreprise` WHERE validite = 1");
+$req->execute();
+$nbent = $req->fetchColumn();
+
+$req = $pdo->prepare("SELECT COUNT(id_offre) FROM `offre` WHERE valide = 1");
+$req->execute();
+$nboffre = $req->fetchColumn();
+
+$req = $pdo->prepare("SELECT COUNT(id_c) FROM `compte` WHERE validite = 1 AND id_type IN (1, 2, 4)");
+$req->execute();
+$nbUsers = $req->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -29,20 +45,6 @@ require_once "../../config.php";
 </head>
 
 <body>
-      <?php
-            $req = $pdo->prepare("SELECT COUNT(id_c) FROM `compte` WHERE validite = 1");
-            $req->execute();
-            $nbcompte = $req->fetchColumn();
-            
-            $req = $pdo->prepare("SELECT COUNT(id_entreprise) FROM `entreprise` WHERE validite = 1");
-            $req->execute();
-            $nbent = $req->fetchColumn();
-            
-            $req = $pdo->prepare("SELECT COUNT(id_offre) FROM `offre` WHERE valide = 1");
-            $req->execute();
-            $nboffre = $req->fetchColumn();
-
-      ?>
       <!-- Navbar -->
       <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light">
@@ -164,6 +166,29 @@ require_once "../../config.php";
                                                       <div class="col-auto">
                                                             <i class="fas fa-calendar-check fa-3x text-gray-300">
                                                             </i>
+                                                      </div>
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+
+                              <div class="col-xl-4 col-md-6 mb-4">
+                                    <div class="card border-left-success shadow h-100 py-2">
+                                          <div class="card-body">
+                                                <div class="row no-gutters">
+                                                      <div class="col mr-2">
+                                                            <div
+                                                                  class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                                  <a href="listUsers.php" class="btn btn-primary">
+                                                                        Gérer les utilisateurs
+                                                                  </a>
+                                                                  <div class="h2 mb-0 font-weight-bold text-gray-800">
+                                                                        <?php echo $nbUsers; ?>
+                                                                  </div>
+                                                            </div>
+                                                      </div>
+                                                      <div class="col-auto">
+                                                            <i class="fas fa-user fa-3x text-gray-300"></i>
                                                       </div>
                                                 </div>
                                           </div>
