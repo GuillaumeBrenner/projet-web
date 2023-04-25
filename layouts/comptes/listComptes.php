@@ -272,6 +272,15 @@ $(document).ready(function() {
                                                 </div>
                                           </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                          <div class="form-group">
+                                                <div class="mb-3">
+                                                      <label class="form-label">Email</label>
+                                                      <input type="Text" class="form-control" id="mail" name="mail">
+                                                </div>
+                                          </div>
+                                    </div>
                               </div>
 
                         </div>
@@ -337,12 +346,9 @@ $(document).ready(function() {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body text-center">
-                        <a href="createPilote.php" type="button" class="btn btn-secondary btn-lg">Pilote</a>
-                        <a href="createEtudiant.php" type="button" class="btn btn-secondary btn-lg ms-5">Etudiant</a>
-                        <a href="createPro.php" type="button" class="btn btn-secondary btn-lg ms-5">Pro</a>
+                        <a href="createEtudiant.php" type="button" class="btn btn-secondary btn-lg">Etudiant</a>
                   </div>
-                  <div class="modal-footer">
-                  </div>
+                  <div class="modal-footer"></div>
             </div>
       </div>
 </div>

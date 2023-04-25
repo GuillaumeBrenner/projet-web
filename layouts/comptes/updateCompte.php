@@ -21,8 +21,9 @@ if (isset($_POST['updateCompte'])) {
       $Nom = $_POST["Nom"];
       $Prenom = $_POST["Prenom"];
       $sexe = $_POST["sexe"];
+      $mail = $_POST["mail"];
 
-      $sql = "UPDATE personne SET Nom='$Nom', Prenom='$Prenom', sexe='$sexe' WHERE id_personne = '$id_personne'";
+      $sql = "UPDATE personne SET Nom='$Nom', Prenom='$Prenom', sexe='$sexe', mail='$mail' WHERE id_personne = '$id_personne'";
       $stmt = $pdo->prepare($sql);
 
       if ($stmt->execute()) {

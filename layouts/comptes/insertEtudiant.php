@@ -21,6 +21,7 @@ if (isset($_POST['insertEtudiant'])) {
   $nom = $_POST['nom'];
   $prenom = $_POST['prenom'];
   $sexe = $_POST['sexe'];
+  $mail = $_POST['mail'];
   $login = $_POST['login'];
   $mdp = $_POST['mdp'];
   $promotion = $_POST['promotion'];
@@ -46,36 +47,37 @@ if (isset($_POST['insertEtudiant'])) {
 
   // Vérification du type de fichier et de la taille pour la photo
   $maxFileSize = 10485760;
-
-  if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
-    // Déplacement du fichier vers le dossier de stockage 
-    $NewFileName = 'PRFIL - ' . $nom . ' - ' . uniqid() . '.' . $FileExtension;
-    $Destination = UPLOAD_DIR . PROFIL_DIR . $NewFileName;
-    move_uploaded_file($FileTmpName, $Destination);
-  } else {
-    if (!in_array($FileExtension, $allowedExtensions)) {
-      $_SESSION['supp'] = "La photo de profil doit être au format : JPG, JPEG, PNG. ";
-      header("Location: listComptes.php");
-      exit();
-    } elseif ($FileSize > $maxFileSize) {
-      $_SESSION['supp'] = "La taille de la photo de profil est trop grande (ne doit pas dépasser 10Mo). ";
+  try {
+    if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
+      // Déplacement du fichier vers le dossier de stockage 
+      $NewFileName = 'PRFIL - ' . $nom . ' - ' . uniqid() . '.' . $FileExtension;
+      $Destination = UPLOAD_DIR . PROFIL_DIR . $NewFileName;
+      move_uploaded_file($FileTmpName, $Destination);
+    } else {
+      if (!in_array($FileExtension, $allowedExtensions)) {
+        $_SESSION['supp'] = "La photo de profil doit être au format : JPG, JPEG, PNG. ";
+        header("Location: listComptes.php");
+        exit();
+      } elseif ($FileSize > $maxFileSize) {
+        $_SESSION['supp'] = "La taille de la photo de profil est trop grande (ne doit pas dépasser 10Mo). ";
+        header("Location: listComptes.php");
+        exit();
+      }
+      $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement du photo de profil, Veuillez réessayer";
       header("Location: listComptes.php");
       exit();
     }
-    $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement du photo de profil, Veuillez réessayer";
-    header("Location: listComptes.php");
-    exit();
-  }
 
-  // Insertion du chemin du fichier dans la base de données
-  $profil_name = $Destination;
-  try {
+    // Insertion du chemin du fichier dans la base de données
+    $profil_name = $Destination;
+
     // Insertion de personne dans la table personne
-    $sql = "INSERT INTO personne (Nom, Prenom, sexe ) VALUES (:nom, :prenom, :sexe)";
+    $sql = "INSERT INTO personne (Nom, Prenom, sexe, mail ) VALUES (:nom, :prenom, :sexe, :mail)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":nom", $nom);
     $stmt->bindParam(":prenom", $prenom);
     $stmt->bindParam(":sexe", $sexe);
+    $stmt->bindParam(":mail", $mail);
     $stmt->execute();
     // Récupération de l'identifiant de la personne insérée
     $id_personne = $pdo->lastInsertId();

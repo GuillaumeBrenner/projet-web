@@ -41,7 +41,13 @@ require_once "../../config.php";
 <body>
       <div class="container mt-5">
             <div class="card">
-                  <h1 class="Offre card-header"> Créer un utilisateur</h1>
+                  <div class="Offre card-header">
+                        <h1>Créer un utilisateur</h1>
+                        <p>Par défaut l'utilisateur est créé en tant que Professionel, Vous pouvez lui changer de role.
+                              après
+                              la création</p>
+                  </div>
+
                   <div class="card-body">
                         <form action="insertUsers.php" method="post" enctype="multipart/form-data">
                               <div class="row">
@@ -52,7 +58,8 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput" class="form-label Offre">Nom
                                                       </label>
-                                                      <input type="text" class="form-control" id="nom" name="nom">
+                                                      <input type="text" class="form-control" id="nom" name="nom"
+                                                            required>
                                                 </div>
                                           </div>
                                     </div>
@@ -62,7 +69,8 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput" class="form-label Offre">Prenom
                                                       </label>
-                                                      <input type="text" class="form-control" id="prenom" name="prenom">
+                                                      <input type="text" class="form-control" id="prenom" name="prenom"
+                                                            required>
                                                 </div>
                                           </div>
                                     </div>
@@ -71,7 +79,7 @@ require_once "../../config.php";
                                           <div class="form-group">
                                                 <div class="mb-3">
                                                       <label class="form-label">Sexe</label>
-                                                      <select class="form-select" name="sexe">
+                                                      <select class="form-select" name="sexe" required>
                                                             <option value="Masculin">Masculin</option>
                                                             <option value="Féminin">Féminin</option>
                                                             <option value="O">Ne se prononce pas
@@ -86,7 +94,8 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="FormInput" class="form-label Offre">Email
                                                       </label>
-                                                      <input type="mail" class="form-control" id="mail" name="mail">
+                                                      <input type="email" class="form-control" id="mail" name="mail"
+                                                            required>
                                                 </div>
                                           </div>
                                     </div>
@@ -96,7 +105,7 @@ require_once "../../config.php";
                                                 <div class="mb-3">
                                                       <label for="Description" class="form-label Offre">Login</label>
                                                       <input type="Text" class="form-control Description" id="login"
-                                                            name="login">
+                                                            name="login" required>
                                                 </div>
                                           </div>
                                     </div>
@@ -107,7 +116,7 @@ require_once "../../config.php";
                                                       <label for="FormInput Description" class="form-label Offre">Mot de
                                                             passe</label>
                                                       <input type="Text" class="form-control Description" id="mdp"
-                                                            name="mdp" placeholder="">
+                                                            name="mdp" placeholder="" required>
                                                 </div>
                                           </div>
                                     </div>
@@ -117,7 +126,7 @@ require_once "../../config.php";
                                                 <label for="FormInput" class="form-label">Promotion</label>
                                                 <div class="mb-3">
                                                       <select name="promotion" class="selectpicker"
-                                                            data-live-search="true">
+                                                            data-live-search="true" required>
                                                             <?php
                                                                   $sql = "SELECT * from promotion";
                                                                   $result = $pdo->query($sql);
@@ -134,7 +143,8 @@ require_once "../../config.php";
                                           <label for="FormInput" class="form-label">Site</label>
                                           <div class="form-group">
                                                 <div class="mb-3">
-                                                      <select name="ville" class="selectpicker" data-live-search="true">
+                                                      <select name="ville" class="selectpicker" data-live-search="true"
+                                                            required>
                                                             <?php
                                                                   $sql = "SELECT * from ville";
                                                                   $result = $pdo->query($sql);

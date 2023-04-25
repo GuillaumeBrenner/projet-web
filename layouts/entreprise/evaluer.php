@@ -45,7 +45,7 @@ require_once "../../config.php";
                   <div class="container-fluid">
                         <?php
                         if (isset($_GET['id'])) {
-                              $sql = 'SELECT entreprise.id_entreprise, entreprise.nom, entreprise.nombre_etudiant,
+                              $sql = 'SELECT entreprise.id_entreprise, entreprise.nom, entreprise.logo, entreprise.nombre_etudiant,
                               ville.région, ville.ville, ville.code_postal,
                               secteur_activité.secteur,
                               GROUP_CONCAT(DISTINCT ville.ville SEPARATOR ", ") AS ville, 

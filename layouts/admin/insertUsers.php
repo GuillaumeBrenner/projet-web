@@ -9,8 +9,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 
 // Définition des constantes pour le dossier de stockage des fichiers
-define('UPLOAD_DIR', 'uploads/');
-define('PROFIL_DIR', 'imgUSER/');
+define('UPLOAD_DIR', '../admin/uploads/');
+define('PROFIL_DIR', 'imgUser/');
 
 // Vérification de la soumission du formulaire
 if (isset($_POST['insertUser'])) {
@@ -24,6 +24,8 @@ if (isset($_POST['insertUser'])) {
   $mail = $_POST['mail'];
   $login = $_POST['login'];
   $mdp = $_POST['mdp'];
+  $promotion = $_POST['promotion'];
+  $ville = $_POST['ville'];
   $id_entreprise = "";
   $idtype = 2;
   $validite = 1;
@@ -45,30 +47,30 @@ if (isset($_POST['insertUser'])) {
 
   // Vérification du type de fichier et de la taille pour la photo
   $maxFileSize = 10485760;
-
-  if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
-    // Déplacement du fichier vers le dossier de stockage 
-    $NewFileName = 'PRFIL - ' . $nom . ' - ' . uniqid() . '.' . $FileExtension;
-    $Destination = UPLOAD_DIR . PROFIL_DIR . $NewFileName;
-    move_uploaded_file($FileTmpName, $Destination);
-  } else {
-    if (!in_array($FileExtension, $allowedExtensions)) {
-      $_SESSION['supp'] = "La photo de profil doit être au format : JPG, JPEG, PNG. ";
-      header("Location: listUsers.php");
-      exit();
-    } elseif ($FileSize > $maxFileSize) {
-      $_SESSION['supp'] = "La taille de la photo de profil est trop grande (ne doit pas dépasser 10Mo). ";
+  try {
+    if (in_array($FileExtension, $allowedExtensions) && $FileSize <= $maxFileSize) {
+      // Déplacement du fichier vers le dossier de stockage 
+      $NewFileName = 'PRFIL - ' . $nom . ' - ' . uniqid() . '.' . $FileExtension;
+      $Destination = UPLOAD_DIR . PROFIL_DIR . $NewFileName;
+      move_uploaded_file($FileTmpName, $Destination);
+    } else {
+      if (!in_array($FileExtension, $allowedExtensions)) {
+        $_SESSION['supp'] = "La photo de profil doit être au format : JPG, JPEG, PNG. ";
+        header("Location: listUsers.php");
+        exit();
+      } elseif ($FileSize > $maxFileSize) {
+        $_SESSION['supp'] = "La taille de la photo de profil est trop grande (ne doit pas dépasser 10Mo). ";
+        header("Location: listUsers.php");
+        exit();
+      }
+      $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement du photo de profil, Veuillez réessayer";
       header("Location: listUsers.php");
       exit();
     }
-    $_SESSION['supp'] = "Une erreur est survenue lors du téléchargement du photo de profil, Veuillez réessayer";
-    header("Location: listUsers.php");
-    exit();
-  }
 
-  // Insertion du chemin du fichier dans la base de données
-  $profil_name = $Destination;
-  try {
+    // Insertion du chemin du fichier dans la base de données
+    $profil_name = $Destination;
+
     // Insertion de personne dans la table personne
     $sql = "INSERT INTO personne (Nom, Prenom, sexe, mail ) VALUES (:nom, :prenom, :sexe, :mail)";
     $stmt = $pdo->prepare($sql);
