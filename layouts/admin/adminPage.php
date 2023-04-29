@@ -3,7 +3,7 @@
 session_start();
 
 // Check if the user is logged in, if not then redirect him to login page
-if ($_SESSION["id"] !==1 || $_SESSION["loggedin"] !== true) {
+if ($_SESSION["id"] !== 1 || $_SESSION["loggedin"] !== true) {
       header("Location: ../../login.php");
       exit;
 }
@@ -42,6 +42,11 @@ $nbUsers = $req->fetchColumn();
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
             integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous">
       </script>
+
+      <!-- Inclure jsChart -->
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.3/dist/apexcharts.min.js"></script>
+</head>
 </head>
 
 <body>
@@ -200,6 +205,71 @@ $nbUsers = $req->fetchColumn();
             </div>
             <!-- /.container-fluid -->
       </div>
+
+      <div class="container">
+            <div class="col-xl-12 col-md-6 mb-4">
+                  <div id="chart"></div>
+            </div>
+      </div>
+
+      <?php
+
+      require_once "../../config.php";
+
+      $sql = "SELECT nom, nombre_etudiant FROM entreprise";
+      // Exécuter la requête SQL
+      $result = $pdo->query($sql);
+
+      // Récupérer les données de la requête
+      $data = $result->fetchAll(PDO::FETCH_ASSOC);
+
+      // Créer un tableau pour stocker les données du graphique
+      $chartData = [];
+
+      // Boucler à travers les données et ajouter chaque entreprise au tableau
+      foreach ($data as $row) {
+            $chartData[] = [
+                  'x' => $row['nom'],
+                  'y' => $row['nombre_etudiant'],
+            ];
+      }
+
+      // Encoder les données en JSON pour les passer à jsChart
+      $chartDataJSON = json_encode($chartData);
+      ?>
+
+
+      <script>
+      // Initialiser jsChart
+      var options = {
+            series: [{
+                  data: <?php echo $chartDataJSON; ?>
+            }],
+            chart: {
+                  type: 'bar',
+                  height: 550
+            },
+            plotOptions: {
+                  bar: {
+                        horizontal: true,
+                  }
+            },
+            dataLabels: {
+                  enabled: false
+            },
+            xaxis: {
+                  nom: <?php echo $chartDataJSON; ?>
+            },
+            yaxis: {
+                  title: {
+                        text: 'Nom des entreprises'
+                  }
+            }
+      };
+
+      var chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+      </script>
 
       <script src="./assets/vendors/jquery/jquery-3.6.0.min.js"></script>
       <script src="./assets/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
